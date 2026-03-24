@@ -75,9 +75,52 @@ function buildLayout({
   shopGridHtml = '',
   ogImageUrl = 'https://outcall.kr/images/연동마사지_프라이빗.jpg',
 }) {
+  const pageKey = `${regionValue || ''}|${districtValue || ''}`;
   const fileName = pageFileName(regionValue, districtValue);
   const encodedFileName = encodeURIComponent(fileName);
   const canonicalUrl = `https://outcall.kr/static-pages/${encodedFileName}`;
+  const sectionTitleVariants = {
+    guide: ['지역 안내', '이 지역 이용 가이드', '방문 케어 안내', '지역별 힐링 안내'],
+    keywords: ['연관 키워드', '추천 검색 키워드', '자주 찾는 키워드', '검색 확장 키워드'],
+    links: ['바로가기', '지역·시/구 바로가기', '빠른 이동 링크', '연결 페이지 모음'],
+  };
+  const introVariants = [
+    `${regionValue || ''}${districtValue ? ` ${districtValue}` : ''} 이용자를 위한 핵심 포인트부터 먼저 확인해보세요.`,
+    `${regionValue || ''}${districtValue ? ` ${districtValue}` : ''} 동선에 맞춰 상담 전 체크할 기준을 정리했습니다.`,
+    `${regionValue || ''}${districtValue ? ` ${districtValue}` : ''} 이용 패턴을 기준으로 빠르게 비교할 수 있게 구성했습니다.`,
+  ];
+  const conclusionVariants = [
+    '마무리로 운영시간·위치·연락 가능 시간대를 함께 확인하면 선택 정확도가 올라갑니다.',
+    '마지막으로 이동 동선과 예산을 함께 비교하면 재방문 만족도를 높일 수 있습니다.',
+    '끝으로 원하는 관리 유형과 가능한 시간대를 함께 전달하면 상담 효율이 좋아집니다.',
+  ];
+  const tableHeaderSets = [
+    { item: '점검 항목', tip: '추천 확인 포인트' },
+    { item: '비교 항목', tip: '선택 가이드' },
+    { item: '체크 포인트', tip: '실전 팁' },
+  ];
+  const hashLocal = (s) => {
+    let h = 2166136261;
+    const str = String(s || '');
+    for (let i = 0; i < str.length; i += 1) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  };
+  const pick = (arr, seed) => arr[hashLocal(seed) % arr.length];
+  const guideTitle = pick(sectionTitleVariants.guide, `${pageKey}:guide`);
+  const keywordsTitle = pick(sectionTitleVariants.keywords, `${pageKey}:keywords`);
+  const linksTitle = pick(sectionTitleVariants.links, `${pageKey}:links`);
+  const introLead = pick(introVariants, `${pageKey}:intro`);
+  const conclusionLead = pick(conclusionVariants, `${pageKey}:conclusion`);
+  const tableHeader = pick(tableHeaderSets, `${pageKey}:table`);
+  const bodyContentRaw = bodyHtml != null && bodyHtml !== '' ? bodyHtml : escHtml(bodyText);
+  const bodyContent = bodyHtml != null && bodyHtml !== ''
+    ? bodyContentRaw
+      .replace(/<th>\s*항목\s*<\/th>/g, `<th>${tableHeader.item}</th>`)
+      .replace(/<th>\s*팁\s*<\/th>/g, `<th>${tableHeader.tip}</th>`)
+    : bodyContentRaw;
   const breadcrumbItems = [
     { name: '홈', url: 'https://outcall.kr/' },
     { name: '지역 페이지', url: 'https://outcall.kr/static-pages/' },
@@ -118,7 +161,7 @@ function buildLayout({
     name: title,
     description,
     inLanguage: 'ko-KR',
-    url: `https://outcall.kr/static-pages/${pageFileName(regionValue, districtValue)}`,
+    url: canonicalUrl,
     isPartOf: {
       '@type': 'WebSite',
       name: '여신 출장마사지 전국 검색',
@@ -524,15 +567,15 @@ ${shopGridHtml}
 <!-- AUTO_SHOP_GRID_END -->
       </div>
       <div class="sec">
-        <h2>지역 안내</h2>
-        <div class="body body-seo">${bodyHtml != null && bodyHtml !== '' ? bodyHtml : escHtml(bodyText)}</div>
+        <h2>${escHtml(guideTitle)}</h2>
+        <div class="body body-seo"><p>${escHtml(introLead)}</p>${bodyContent}<p>${escHtml(conclusionLead)}</p></div>
       </div>
       <div class="sec">
-        <h2>연관 키워드</h2>
+        <h2>${escHtml(keywordsTitle)}</h2>
         <div class="chips">${chipsHtml}</div>
       </div>
       <div class="sec">
-        <h2>바로가기</h2>
+        <h2>${escHtml(linksTitle)}</h2>
         <div class="links">${linksHtml}</div>
       </div>
     </article>
@@ -870,18 +913,13 @@ ${shopGridHtml}
 
       function syncSearchFromSelects() {
         var parts = [];
-        // 요청: 출장마사지(outcall)에서 지역이 선택되면 시/구/동은 결과 필터에 영향을 주지 않음
-        if (categoryMode === 'outcall' && regionSelect.value) {
-          parts.push(regionSelect.value);
-        } else {
-          if (regionSelect.value) parts.push(regionSelect.value);
-          if (citySelect.value) parts.push(citySelect.value);
-          if (
-            subdistrictSelect.value &&
-            subdistrictSelect.value.indexOf(HOT_SUB_VAL_SEP) !== -1
-          ) {
-            parts.push(subdistrictSelect.value.split(HOT_SUB_VAL_SEP)[1] || '');
-          }
+        if (regionSelect.value) parts.push(regionSelect.value);
+        if (citySelect.value) parts.push(citySelect.value);
+        if (
+          subdistrictSelect.value &&
+          subdistrictSelect.value.indexOf(HOT_SUB_VAL_SEP) !== -1
+        ) {
+          parts.push(subdistrictSelect.value.split(HOT_SUB_VAL_SEP)[1] || '');
         }
         var suffix = categoryMode === 'outcall' ? ' 출장마사지' : ' 마사지';
         input.value = parts.length ? parts.join(' ') + suffix : '';

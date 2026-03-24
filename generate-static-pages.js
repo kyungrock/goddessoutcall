@@ -1483,14 +1483,7 @@ function main() {
   }
 
   function seoRegionHeading(region) {
-    const h = [
-      `${region} 출장마사지 · 인기 힐링·방문 케어`,
-      `${region} 인기 출장마사지 · 홈타이·실력파 안내`,
-      `${region} 출장마사지 · 많이 찾는 힐링 안내`,
-      `${region} 프리미엄 출장마사지 · 만족도 높은 선택`,
-      `${region} 힐링 출장마사지 · 지역별 인기 안내`,
-    ];
-    return h[hashString(`head:${region}`) % h.length];
+    return `${region} 출장마사지 | 프리미엄 홈타이 추천`;
   }
 
   function seoRegionIntro(region) {
@@ -1522,15 +1515,7 @@ function main() {
   }
 
   function seoCityHeading(region, district, displayCityText) {
-    const key = `${region}|${district}`;
-    const h = [
-      `${displayCityText} 출장마사지 · 인기 힐링·방문 케어`,
-      `${displayCityText} 인기 출장마사지 · 홈타이·실력파`,
-      `${displayCityText} 힐링 출장마사지 · 많이 찾는 안내`,
-      `${displayCityText} 프리미엄 출장 · 만족도 높은 선택`,
-      `${region} ${district} 출장마사지 · 인기·후기 안내`,
-    ];
-    return h[hashString(`head:${key}`) % h.length];
+    return `${displayCityText} 출장마사지 | 프리미엄 홈타이 추천`;
   }
 
   function seoCityIntro(region, district, displayCityText) {

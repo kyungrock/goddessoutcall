@@ -157,6 +157,13 @@
 
       var root = document.getElementById('detail-root');
       var id = getParam('id');
+      // Legacy query-style URL support:
+      // redirect to static detail page generated for SEO/crawlability.
+      if (id) {
+        var staticUrl = 'static-pages/shop-' + encodeURIComponent(id) + '.html';
+        window.location.replace(staticUrl);
+        return;
+      }
       var cardList = window.shopCardData || [];
       var shopsArr = (window.shopsData && window.shopsData.shops) ? window.shopsData.shops : [];
 

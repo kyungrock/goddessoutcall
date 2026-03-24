@@ -73,7 +73,19 @@ function buildLayout({
   regionsDataLiteral,
   hotDataLiteral,
   shopGridHtml = '',
+  ogImageUrl = 'https://outcall.kr/images/연동마사지_프라이빗.jpg',
 }) {
+  const fileName = pageFileName(regionValue, districtValue);
+  const encodedFileName = encodeURIComponent(fileName);
+  const canonicalUrl = `https://outcall.kr/static-pages/${encodedFileName}`;
+  const breadcrumbItems = [
+    { name: '홈', url: 'https://outcall.kr/' },
+    { name: '지역 페이지', url: 'https://outcall.kr/static-pages/' },
+    regionValue
+      ? { name: `${regionValue} 출장마사지`, url: `https://outcall.kr/static-pages/${encodeURIComponent(pageFileName(regionValue, ''))}` }
+      : null,
+    districtValue ? { name: `${districtValue} 출장마사지`, url: canonicalUrl } : null,
+  ].filter(Boolean);
   return `<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -82,6 +94,69 @@ function buildLayout({
   <title>${escHtml(title)}</title>
   <meta name="description" content="${escHtml(description)}" />
   <meta name="google-site-verification" content="XFm21TyCnCjA4dHXag5jR63WrpmMh6DUPGM9lY4-Et8" />
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+  <meta name="theme-color" content="#020617" />
+  <meta name="format-detection" content="telephone=yes" />
+  <meta http-equiv="content-language" content="ko" />
+  <link rel="alternate" hreflang="ko-KR" href="${canonicalUrl}" />
+  <link rel="alternate" hreflang="x-default" href="${canonicalUrl}" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="여신 출장마사지 전국 검색" />
+  <meta property="og:title" content="${escHtml(title)}" />
+  <meta property="og:description" content="${escHtml(description)}" />
+  <meta property="og:url" content="${canonicalUrl}" />
+  <meta property="og:image" content="${escHtml(ogImageUrl)}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${escHtml(title)}" />
+  <meta name="twitter:description" content="${escHtml(description)}" />
+  <meta name="twitter:image" content="${escHtml(ogImageUrl)}" />
+  <link rel="canonical" href="${canonicalUrl}" />
+  <script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    inLanguage: 'ko-KR',
+    url: `https://outcall.kr/static-pages/${pageFileName(regionValue, districtValue)}`,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: '여신 출장마사지 전국 검색',
+      url: 'https://outcall.kr/',
+    },
+  })}</script>
+  <script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbItems.map((item, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  })}</script>
+  <script type="application/ld+json">${JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: canonicalUrl,
+    inLanguage: 'ko-KR',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: '여신 출장마사지 전국 검색',
+      url: 'https://outcall.kr/',
+    },
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbItems.map((item, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        name: item.name,
+        item: item.url,
+      })),
+    },
+  })}</script>
   <style>
     :root { --bg:#050816; --text:#e5e7eb; --soft:#9ca3af; --border:#1f2933; --radius:18px; --primary-soft: rgba(99, 102, 241, 0.12); }
     * { box-sizing: border-box; }
@@ -600,7 +675,7 @@ ${shopGridHtml}
         article.setAttribute('data-id', item.id);
 
         var link = document.createElement('a');
-        link.href = '../shop-detail.html?id=' + encodeURIComponent(item.id);
+        link.href = 'shop-' + encodeURIComponent(item.id) + '.html';
         link.setAttribute('aria-label', (item.name || '업체') + ' 상세보기');
 
         var thumb = document.createElement('div');
@@ -1471,6 +1546,27 @@ function main() {
 
   ensureDir(outDir);
   shopCardHtml.clearCache();
+  const shopCardData = shopCardHtml.loadShopCardData();
+  const shopsPayload = shopCardHtml.loadShopsData();
+  const shopsArr = Array.isArray(shopsPayload.shops) ? shopsPayload.shops : [];
+  const allMerged = shopCardHtml.buildAllShopCards(shopCardData, shopsArr);
+  const outcallList = shopCardHtml.getListForCategory(allMerged, 'outcall');
+
+  function representativeOgImage(region, district) {
+    const filtered = shopCardHtml.filterShopListForPage(outcallList, {
+      categoryMode: 'outcall',
+      selectedRegion: region || '',
+      selectedCity: district || '',
+      selectedSub: '',
+      tokens: [],
+    });
+    const first = filtered && filtered.length ? filtered[0] : null;
+    if (!first) return 'https://outcall.kr/images/연동마사지_프라이빗.jpg';
+    const rawSrc = shopCardHtml.cardImageSrc(first, shopsArr);
+    const normalized = shopCardHtml.normalizeImageSrcForPage(rawSrc, '').replace(/^\.?\//, '');
+    if (!normalized) return 'https://outcall.kr/images/연동마사지_프라이빗.jpg';
+    return `https://outcall.kr/${encodeURI(normalized)}`;
+  }
 
   regions.forEach((regionObj) => {
     const region = regionObj.name;
@@ -1508,6 +1604,7 @@ function main() {
       searchKeywordPrefix: region,
       regionsDataLiteral,
       hotDataLiteral,
+      ogImageUrl: representativeOgImage(region, ''),
       shopGridHtml: shopCardHtml.renderStaticShopGrid({
         region,
         district: '',
@@ -1561,6 +1658,7 @@ function main() {
         searchKeywordPrefix: displayCityText,
         regionsDataLiteral,
         hotDataLiteral,
+        ogImageUrl: representativeOgImage(region, district),
         shopGridHtml: shopCardHtml.renderStaticShopGrid({
           region,
           district,

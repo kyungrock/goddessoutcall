@@ -65,6 +65,10 @@ function normalizeImageSrcForPage(src, prefix) {
   return s;
 }
 
+function shopDetailFileName(id) {
+  return `shop-${encodeURIComponent(String(id))}.html`;
+}
+
 function sortById(a, b) {
   return String(a.id).localeCompare(String(b.id), 'ko');
 }
@@ -212,7 +216,7 @@ function buildCardArticleHtml(item, shopsArr, opts) {
   const detailPrefix = opts && opts.detailPrefix != null ? opts.detailPrefix : '';
   const imagePrefix = opts && opts.imagePrefix != null ? opts.imagePrefix : '';
   const id = String(item.id);
-  const href = `${detailPrefix}shop-detail.html?id=${encodeURIComponent(id)}`;
+  const href = `${detailPrefix}${shopDetailFileName(id)}`;
   let src = cardImageSrc(item, shopsArr);
   src = normalizeImageSrcForPage(src, imagePrefix);
   const srcEsc = escAttr(src);
@@ -304,7 +308,7 @@ function renderStaticShopGrid(pageOpts) {
     tokens: [],
   });
   return filtered.map((item) =>
-    buildCardArticleHtml(item, shopsArr, { detailPrefix: '../', imagePrefix: '../' })
+    buildCardArticleHtml(item, shopsArr, { detailPrefix: '', imagePrefix: '../' })
   ).join('\n');
 }
 
@@ -312,7 +316,7 @@ function renderIndexShopGrid() {
   const { allMerged, shopsData } = getShopDataCached();
   const shopsArr = shopsData.shops || [];
   const list = getListForCategory(allMerged, 'outcall');
-  return list.map((item) => buildCardArticleHtml(item, shopsArr, { detailPrefix: '', imagePrefix: '' })).join('\n');
+  return list.map((item) => buildCardArticleHtml(item, shopsArr, { detailPrefix: 'static-pages/', imagePrefix: '' })).join('\n');
 }
 
 function clearCache() {
@@ -335,4 +339,5 @@ module.exports = {
   clearCache,
   cardImageSrc,
   normalizeImageSrcForPage,
+  shopDetailFileName,
 };

@@ -1,0 +1,2324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>전국 출장마사지 · 홈타이 검색 | 타임케어 스타일 데모</title>
+  <meta name="description" content="서울, 경기, 인천, 부산, 대구, 광주, 대전, 울산, 강원, 충청, 경상, 전라, 제주까지 전국 출장마사지·홈타이 업체를 한 번에 검색하세요. 지역·시/구·동 키워드 기반으로 맞춤 출장안마 정보를 제공합니다." />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- 기본 폰트 & 간단 스타일 -->
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-elevated: #0b1020;
+      --primary: #6366f1;
+      --primary-soft: rgba(99, 102, 241, 0.12);
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border: #1f2933;
+      --radius-xl: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 50%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 88px;
+    }
+    header.page-header {
+      margin-bottom: 24px;
+    }
+    a.logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: inherit;
+      text-decoration: none;
+    }
+    a.logo:hover {
+      opacity: 0.92;
+    }
+    .logo-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .hero-title {
+      margin: 16px 0 6px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+    .hero-sub {
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+    .search-bar {
+      margin: 24px 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .search-input-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .search-input-wrap {
+      flex: 1 1 220px;
+      position: relative;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 10px 36px 10px 30px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      font-size: 14px;
+    }
+    .search-input-wrap input::placeholder {
+      color: #6b7280;
+    }
+    .search-input-wrap span.icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .search-input-wrap button.clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: #6b7280;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .pill-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+    }
+    /* 요청에 따라 quick pill 영역은 화면에서 숨김 처리 */
+    #quick-region-pills {
+      display: none !important;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+      color: var(--text-soft);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pill.active {
+      background: var(--primary-soft);
+      color: #e5e7ff;
+      border-color: rgba(129, 140, 248, 0.8);
+    }
+    .select-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      align-items: center;
+    }
+    .select-row label {
+      color: var(--text-soft);
+      font-size: 11px;
+      margin-right: 2px;
+    }
+    .select-row select {
+      min-width: 110px;
+      padding: 6px 24px 6px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+      appearance: none;
+      position: relative;
+    }
+    .select-row select:focus {
+      border-color: rgba(129, 140, 248, 0.8);
+    }
+    .select-wrap {
+      position: relative;
+    }
+    .select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: #6b7280;
+      pointer-events: none;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.1fr);
+      gap: 18px;
+      margin-top: 16px;
+    }
+    /* 큰 화면: 홈 본문(업체 카드) 한 덩어리로 가운데, 카드는 더 넓게 */
+    @media (min-width: 961px) {
+      .page {
+        max-width: 1320px;
+      }
+      header.page-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      a.logo {
+        justify-content: center;
+      }
+      .hero-title {
+        max-width: 920px;
+      }
+      .hero-sub {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .search-bar {
+        width: 100%;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+      }
+      .layout .panel {
+        width: 100%;
+        max-width: 1200px;
+      }
+      .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 12px;
+      }
+    }
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      header.page-header { display: flex; flex-direction: column; }
+      /* 요청: 화면이 작아지면 hero-title / hero-sub을 search-bar 아래로 */
+      .search-bar { order: 2; }
+      .hero-title { order: 3; }
+      .hero-sub { order: 4; }
+    }
+    .panel {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 14px 14px 16px;
+      backdrop-filter: blur(16px);
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .panel-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .shop-card {
+      border-radius: 14px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.12), transparent 55%);
+      padding: 0;
+      overflow: hidden;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+    }
+    .shop-card > a {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+      border-radius: inherit;
+      overflow: hidden;
+    }
+    .shop-card-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #0f172a;
+      overflow: hidden;
+    }
+    .shop-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .shop-card-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      flex: 1;
+    }
+    .shop-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.9);
+    }
+    .shop-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .shop-card-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.35;
+      flex: 1;
+      min-width: 0;
+    }
+    .shop-card-rating {
+      font-size: 12px;
+      color: var(--text-soft);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .shop-card-rating span {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+    .shop-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+    .shop-card-meta > span {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+    .shop-card-price-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .shop-card-price-row .shop-card-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: #e5e7ff;
+      margin-top: 0;
+      flex: 1;
+      min-width: 0;
+    }
+    .shop-card-phone {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-soft);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .shop-card-greeting {
+      margin: 6px 0 0;
+      font-size: 11px;
+      color: var(--text-soft);
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .shop-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .shop-card-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: #9ca3af;
+    }
+    .shop-card-footer {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(31, 41, 55, 0.5);
+    }
+    .shop-card-link {
+      font-size: 12px;
+      color: #c7d2fe;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    /* 모바일: 업체 카드 간소화 (소개·태그·하단 링크만 숨김, 영업시간·가격+전화는 유지) */
+    @media (max-width: 960px) {
+      .shop-card-image {
+        aspect-ratio: 16 / 9;
+      }
+      .shop-card-body {
+        padding: 8px 10px 10px;
+      }
+      .shop-card-title {
+        font-size: 13px;
+      }
+      .shop-card-rating {
+        font-size: 11px;
+      }
+      .shop-card-meta {
+        margin-top: 4px;
+        gap: 2px;
+        font-size: 10px;
+      }
+      .shop-card-meta > span:nth-child(2) {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+      }
+      .shop-card-meta > span:nth-child(2) > span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .shop-card-price-row {
+        margin-top: 6px;
+        gap: 6px;
+      }
+      .shop-card-price-row .shop-card-price {
+        font-size: 13px;
+      }
+      .shop-card-phone {
+        font-size: 11px;
+      }
+      .shop-card-greeting,
+      .shop-card-tags,
+      .shop-card-footer {
+        display: none !important;
+      }
+    }
+    .region-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-height: 260px;
+      overflow: auto;
+      padding-right: 4px;
+      margin-top: 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(2, 6, 23, 0.95);
+      padding: 10px;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: min(680px, 92vw);
+      z-index: 40;
+      box-shadow: 0 18px 40px rgba(2, 6, 23, 0.85);
+    }
+    .keyword-toggle {
+      border: 1px solid rgba(129, 140, 248, 0.8);
+      background: var(--primary-soft);
+      color: #e5e7ff;
+      border-radius: 999px;
+      font-size: 10px;
+      padding: 4px 8px;
+      line-height: 1.2;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .region-keywords.is-collapsed {
+      display: none;
+    }
+    .keyword-anchor {
+      position: relative;
+      display: inline-flex;
+    }
+    .region-chip {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px dashed rgba(55, 65, 81, 0.9);
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.8);
+    }
+    .footer-note {
+      margin-top: 22px;
+      font-size: 11px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    .bottom-category-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(15, 23, 42, 0.92);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .bottom-category-bar .cat-btn {
+      flex: 1;
+      max-width: 200px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(2, 6, 23, 0.6);
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .bottom-category-bar .cat-btn:first-child {
+      border-radius: 12px 0 0 12px;
+      border-right: none;
+    }
+    .bottom-category-bar .cat-btn:last-child {
+      border-radius: 0 12px 12px 0;
+    }
+    .bottom-category-bar .cat-btn.is-active {
+      background: var(--primary-soft);
+      color: #e5e7ff;
+      border-color: rgba(129, 140, 248, 0.85);
+    }
+    .bottom-category-bar .cat-btn:not(.is-active):hover {
+      color: #e5e7eb;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <a href="index.html" class="logo" title="홈으로">
+        <span class="logo-pill">여신</span>
+        <span>출장마사지 전국 검색</span>
+      </a>
+      <h1 class="hero-title">지역별 출장마사지 · 홈타이 한 번에 찾기</h1>
+      <p class="hero-sub">
+        상단 검색창에 <strong>지역 + 출장마사지</strong>를 입력하거나 아래 카드에서 업체를 선택해 보세요.
+        예시: <strong>강남 출장마사지</strong>, <strong>제주 연동 홈타이</strong>, <strong>부산 서면 출장안마</strong>.
+      </p>
+      <div class="search-bar">
+        <div class="search-input-row">
+          <div class="search-input-wrap">
+            <span class="icon">🔍</span>
+            <input
+              id="shop-search-input"
+              type="search"
+              placeholder="예: 강남 출장마사지, 제주 연동 홈타이, 부산 서면 마사지"
+              autocomplete="off"
+            />
+            <button class="clear-btn" id="search-clear-btn" aria-label="검색어 초기화">×</button>
+          </div>
+          <div class="pill-filters" id="quick-region-pills">
+            <!-- 선택한 지역의 시/구 빠른 선택 -->
+          </div>
+        </div>
+        <div class="select-row">
+          <div class="select-wrap">
+            <label for="region-select">지역</label>
+            <select id="region-select">
+              <option value="">전체</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <label for="city-select">시/구</label>
+            <select id="city-select" disabled>
+              <option value="">전체</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <label for="subdistrict-select">동/읍/면</label>
+            <select id="subdistrict-select" disabled>
+              <option value="">전체</option>
+            </select>
+          </div>
+          <div class="keyword-anchor">
+            <button type="button" id="keyword-toggle-btn" class="keyword-toggle" aria-expanded="false">
+              키워드 보기
+            </button>
+            <div id="region-keyword-list" class="region-keywords is-collapsed">
+              <!-- JS에서 korea-regions.json + korea-hot-subdistricts.json을 읽어 채움 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel" aria-label="업체 카드 목록">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">추천 출장마사지 / 홈타이 업체</div>
+            <div class="panel-sub" id="result-count-text">전국 힐링샵 데이터를 불러오는 중…</div>
+          </div>
+        </div>
+        <div id="shop-card-grid" class="card-grid">
+<!-- AUTO_SHOP_GRID_BEGIN -->
+<article class="shop-card" data-id="busan_outcall_japan_homecare_001">
+  <a href="shop-detail.html?id=busan_outcall_japan_homecare_001" aria-label="부산일본홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="images/부산출장마사지_부산일본홈케어.jpg" alt="부산일본홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">부산일본홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>부산</span></span>
+        <span>⏱ <span>24시간 연중무휴 (폰이꺼진경우 : 마감OR랜덤휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-6379</span>
+      </div>
+      <p class="shop-card-greeting">부산출장마사지 부산일본홈케어는 부산과 경남 전지역에서 서비스를 제공하는 전문 출장 홈타이 업체입니다. 일본혼혈 관리사들이 정성스럽게 서비스를 제공하며, 20대~30대 실력파 여성 관리사들이 상기종목 테라피 코스를 수료하여 최고의 힐링을 보장합니다. 타이 코스, 아로마 코스, 감성 스웨디시, 스페셜 혼합, VIP힐링 등 다양한 프로그램을 제공하며, 원하는 장소에서 편안하게 서비스를 받을 수 있습니다. 손과 마음이 전하는 정성스런 관리를 통해 편안함을 넘어 감동을 선사해드립니다. 24시간 연중무휴로 …</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이 코스</span><span class="shop-card-tag">아로마 코스</span><span class="shop-card-tag">감성 스웨디시</span><span class="shop-card-tag">스페셜 혼합</span><span class="shop-card-tag">VIP힐링</span><span class="shop-card-tag">출장 홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="cheonan_princess_thai_001">
+  <a href="shop-detail.html?id=cheonan_princess_thai_001" aria-label="프린세스타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/천안출장마사지_프린세스타이.jpg" alt="프린세스타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">프린세스타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충남 천안</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6355</span>
+      </div>
+      <p class="shop-card-greeting">20대 힐링 출장홈타이 ⭐ 따뜻한 손길로 고객님의 힐링에 최선을 다하겠습니다. ^^⭐ 천안출장마사지 최고의 서비스를 보장하는 프린세스 타이 입니다. 최고의 마사지로 고객님께 보답하겠습니다. 20대 관리사 부드러운 손길로 최고의 대접을 선사하겠습니다. 충남,천안 및 전 지역에서 홈타이 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링마사지</span><span class="shop-card-tag">출장홈타이</span><span class="shop-card-tag">힐링샵</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="cheongju_today_outcall_001">
+  <a href="shop-detail.html?id=cheongju_today_outcall_001" aria-label="오늘출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/청주출장마사지_오늘출장.jpg" alt="오늘출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">오늘출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충북 청주</span></span>
+        <span>⏱ <span>오후 5시 ~ 새벽 6시 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-6535</span>
+      </div>
+      <p class="shop-card-greeting">출장마사지 최고의 서비스를 보장하는 오늘 출장입니다. 전문적인 관리사쌤들이 고객님의 오늘 하루지치신 몸과 마음을 힐링시켜 드립니다. 편안하게 연락주세요. 감사합니다. ❤ 청주, 오창, 증평, 진천, 오송, 조치원, 세종, 대전 전지역에서 타이 코스, 아로마 코스, 크림 코스, 힐링 코스, 스웨디시 코스, 스페셜 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">크림마사지</span><span class="shop-card-tag">힐링마사지</span><span class="shop-card-tag">스웨디시마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="cheongju_today_outcall_001">
+  <a href="shop-detail.html?id=cheongju_today_outcall_001" aria-label="오늘 출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/청주출장마사지_오늘출장.jpg" alt="오늘 출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">오늘 출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충북 청주</span></span>
+        <span>⏱ <span>오후 5시 ~ 새벽 6시 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-6535</span>
+      </div>
+      <p class="shop-card-greeting">청주출장마사지-20대 힐링샵 ⭐ 피로를 풀어드리기 위해 부드러운 손길로 힐링으로 보답하겠습니다. ⭐ 감사합니다. 출장마사지 최고의 서비스를 보장하는 오늘 출장입니다. 전문적인 관리사쌤들이 고객님의 오늘 하루지치신 몸과 마음을 힐링시켜 드립니다. 편안하게 연락주세요. 감사합니다. ❤ 청주,오창,증평,진천,오송,조치원,세종,대전 전지역에서 타이 코스, 아로마 코스, 크림 코스, 힐링 코스, 스웨디시 코스, 스페셜 코스 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이 코스</span><span class="shop-card-tag">아로마 코스</span><span class="shop-card-tag">크림 코스</span><span class="shop-card-tag">힐링 코스</span><span class="shop-card-tag">스웨디시 코스</span><span class="shop-card-tag">스페셜 코스</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="chungbuk_cheongju_angel_outcall_001">
+  <a href="shop-detail.html?id=chungbuk_cheongju_angel_outcall_001" aria-label="엔젤 상세보기">
+    <div class="shop-card-image">
+      <img src="images/청주출장마사지_엔젤.jpg" alt="엔젤" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">엔젤</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충북 청주</span></span>
+        <span>⏱ <span>저녁 6시 ~ 아침 6시 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-7125</span>
+      </div>
+      <p class="shop-card-greeting">청주 엔젤출장마사지 입니다. 언제나 고객님 한분 한분께 정성을 다하여 관리해드리겠습니다. 어리지만 테라피 실력이나 모두 월등합니다. 출장마사지로 최고의 힐링을 선하겠습니다. 청주, 오창, 내수, 오송 등 전지역에서 건식 타이 코스, 아로마 습식 코스, 감성힐링 코스, 크림 코스, 스페셜 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링</span><span class="shop-card-tag">크림</span><span class="shop-card-tag">스페셜</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="chungbuk_happy_homethai_outcall_001">
+  <a href="shop-detail.html?id=chungbuk_happy_homethai_outcall_001" aria-label="해피홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_해피홈타이.jpg" alt="해피홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">해피홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충북 진천</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6317</span>
+      </div>
+      <p class="shop-card-greeting">충북 진천,음성,증평,충주 해피홈타이 입니다. 부드러우면서도 시원하기도하며 포근함과 평소 느껴보지 못한 감각까지 느끼실 수 있도록 감미로운 손길의 관리로 감성이 힐링되는 테라피를 느껴보세요. 충북 전지역(진천, 음성, 증평, 충주)에서 타이 코스, 아로마 코스, 힐링 코스, 스페셜 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링마사지</span><span class="shop-card-tag">스페셜</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="chungbuk_homethai_outcall_001">
+  <a href="shop-detail.html?id=chungbuk_homethai_outcall_001" aria-label="충북홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/충북홈타이_충북출장마사지.jpg" alt="충북홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">충북홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충북 청주</span></span>
+        <span>⏱ <span>24시간 (365일 연중무휴)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6618</span>
+      </div>
+      <p class="shop-card-greeting">충북 출장마사지 인사 드립니다^^ 일상에 지친몸과 마음의 힐링을 위하여 최선을 다하겠습니다. 그동안 쌓인 피로와 스트레스를 훌훌 털어버리세요~!!!! 친절과 정성을다해 관리해 드리겠습니다. 편안한 장소에서 받아 보세요. ❤ 충북 전지역에서 타이 코스, 아로마 코스, 크림 코스, 고객 이벤트 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">크림마사지</span><span class="shop-card-tag">홈케어</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="chungju_pattaya_homethai_outcall_001">
+  <a href="shop-detail.html?id=chungju_pattaya_homethai_outcall_001" aria-label="파타야홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/파타야 홈타이.jpg" alt="파타야홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">파타야홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>충북 충주</span></span>
+        <span>⏱ <span>연중무휴 24시간 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6627</span>
+      </div>
+      <p class="shop-card-greeting">최고의 서비스를 보장하는 충북 출장 파타야홈타이 입니다. 단골이 많은곳은 이유가 있습니다! 전원 20대,30대 출장 여쌤들로 빠른이동, 최고의마인드, 한분한분 정성어린 손길로 편안한 힐링과 지친 심신의 안정을 약속 드리겠습니다. ❤ 충북 전지역(충주, 진천, 음성, 증평)에서 타이마사지, 아로마마사지, 힐링마사지, VIP 스페셜 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링마사지</span><span class="shop-card-tag">VIP 스페셜</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="daegu_female_student_korean_visit_001">
+  <a href="shop-detail.html?id=daegu_female_student_korean_visit_001" aria-label="20대 여대생 한국출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/대구출장_여대생한국출장.jpg" alt="20대 여대생 한국출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 여대생 한국출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>대구 경산 혁신 현풍</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-7145</span>
+      </div>
+      <p class="shop-card-greeting">대구 홈타이 ⭐ 어디든지 방문하여 최상의 힐링을!⭐ 대구출장마사지 최고의 서비스를 보장하는 20대 여대생 한국출장입니다. 언제 어디서나 힐링이 필요하시면 대구전지역.경산.혁신.현풍 방문관리를 해드리는 대구20대 여대생vip 20대 젊은 한국.러시아 관리사들이 빛의 속도로 계신곳을 방문관리 해드려요! 힐링이 필요하시면 언제든지 대구20대 여대생을 불러주세요.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span><span class="shop-card-tag">VIP 코스</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="daegu_top_homethai_001">
+  <a href="shop-detail.html?id=daegu_top_homethai_001" aria-label="TOP홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/대구출장마사지_TOP홈타이.jpg" alt="TOP홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">TOP홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>대구 전지역</span></span>
+        <span>⏱ <span>오후 6시 30분 ~ 아침 6시 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6454</span>
+      </div>
+      <p class="shop-card-greeting">20대 대구출장마사지 ❤ 마인드 &amp; 실력 힐링 출장 부드러운 손길로 최고의 마사지를 선사하겠습니다. ❤ 대구 전지역 홈타이 출장마사지 최고의 서비스를 보장하는 TOP 홈타이입니다. 부드러운 손길로 모시겠습니다. 신속방문!! 감사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="daegu_visit_blanc_homethai_001">
+  <a href="shop-detail.html?id=daegu_visit_blanc_homethai_001" aria-label="블랑홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_블랑홈타이.jpg" alt="블랑홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">블랑홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>대구 전지역</span></span>
+        <span>⏱ <span>오후 6시 ~ 아침 5시 (365일 연중무휴)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6447</span>
+      </div>
+      <p class="shop-card-greeting">힐링 출장⭐고객님의 만족을 채워드리는 감성 타이 &amp; 아로마 부드러운 손길로 모시겠습니다. 대구 출장 블랑홈타이 입니다. 전원 태국 관리사님들로 전문적인 실력으로 일상의 고단함을 잊고 편안하게 휴식 하실 수 있도록 항상 최선을 다하겠습니다. 언제나 힐링 될 수 있는 마사지출장샵이 되겠습니다. ❤</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링 코스</span><span class="shop-card-tag">이벤트 코스</span><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="daejeon_sejong_cheongju_milkwhite_homethai_001">
+  <a href="shop-detail.html?id=daejeon_sejong_cheongju_milkwhite_homethai_001" aria-label="20대 우유빛홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_우유빛홈타이.jpg" alt="20대 우유빛홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 우유빛홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>대전</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-7092</span>
+      </div>
+      <p class="shop-card-greeting">20대 ~30대 힐링관리사 ⭐️ 일상에 지친 심신을 편안하게 힐링하고 가세요 ^^ 대전,세종,청주 최고의 서비스를 보장하는 우유빛홈타이 입니다. 20대 관리사들로 부드러운 손길로 고객님의 힐링을 책임지겠습니다!^^ 대전, 세종, 청주 전지역에서 건식 타이 코스, 아로마 습식 코스, 스페셜 코스, 감성힐링 코스, 스웨디시 코스 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">건식 타이 코스</span><span class="shop-card-tag">아로마 습식 코스</span><span class="shop-card-tag">스페셜 코스</span><span class="shop-card-tag">감성힐링 코스</span><span class="shop-card-tag">스웨디시 코스</span><span class="shop-card-tag">출장홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="daejeon_sejong_cheongju_milkwhite_homethai_outcall_001">
+  <a href="shop-detail.html?id=daejeon_sejong_cheongju_milkwhite_homethai_outcall_001" aria-label="20대 우유빛홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_20대 우유빛홈타이.jpg" alt="20대 우유빛홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 우유빛홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>대전 대전</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-7092</span>
+      </div>
+      <p class="shop-card-greeting">대전, 세종, 청주 최고의 서비스를 보장하는 우유빛홈타이 입니다. 20대 관리사들로 부드러운 손길로 고객님의 힐링을 책임지겠습니다. 대전, 세종, 청주 전지역에서 건식 타이 코스, 아로마 습식 코스, 스페셜 코스, 감성힐링 코스, 스웨디시 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링</span><span class="shop-card-tag">스페셜</span><span class="shop-card-tag">스웨디시</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gangwon_gangneung_honey_outcall_001">
+  <a href="shop-detail.html?id=gangwon_gangneung_honey_outcall_001" aria-label="허니 상세보기">
+    <div class="shop-card-image">
+      <img src="images/강릉마사지_허니.jpg" alt="허니" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">허니</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>강원 강릉</span></span>
+        <span>⏱ <span>오후 6시 ~ 아침 7시 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6751</span>
+      </div>
+      <p class="shop-card-greeting">강릉출장마사지 최고의 서비스를 보장하는 허니 입니다. 스트레스가 쌓인 몸을 꼼꼼하고 세심하게 관리해 드립니다. 사람들 마다 체형이 다르고 근육 결이 다르기 때문에 고객님의 체형, 컨디션에 따라 맞춤 테라피로 오직 초심을 잃지않는 열정으로 보답드리겠습니다. 강릉, 동해, 양양, 평창 전지역에서 타이마사지, 아로마마사지 등 다양한 프로그램으로 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링</span><span class="shop-card-tag">스페셜</span><span class="shop-card-tag">VIP</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gangwon_wonju_goodthai_outcall_001">
+  <a href="shop-detail.html?id=gangwon_wonju_goodthai_outcall_001" aria-label="굿타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/원주홈타이_굿타이.jpg" alt="굿타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">굿타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>강원도 원주</span></span>
+        <span>⏱ <span>저녁 6시 ~ 아침 6시 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">90,000원~ (기존가 100,000원)</span>
+        <span class="shop-card-phone">0507-1859-6810</span>
+      </div>
+      <p class="shop-card-greeting">홈케어 최고의 서비스를 보장하는 굿타이 입니다. 어디든지 방문하여 최상의 힐링을 한분 한분 정성을 다해 선사해드리겠습니다. 강원도 출장마사지 (원주,횡성 문막 등 전지역)에서 타이마사지, 아로마마사지, VIP 코스 등 다양한 프로그램으로 최상의 힐링을 제공합니다. 전원 실력파 여 쌤들로 구성되어 있으며, 20대,30대 &amp; 힐링샵으로 상기 종목 테라피 과정을 수료한 전문 관리사들이 서비스합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gwangju_sensual_massage_homecare_001">
+  <a href="shop-detail.html?id=gwangju_sensual_massage_homecare_001" aria-label="20대 센슈얼마사지홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="images/광주홈타이_센슈얼마사지.jpg" alt="20대 센슈얼마사지홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 센슈얼마사지홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>광주</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">130,000원~</span>
+        <span class="shop-card-phone">0507-1859-6832</span>
+      </div>
+      <p class="shop-card-greeting">20대 ~ 30대 관리사 광주홈케어 ⭐ 부드러운 손길로 ♥ ♥ 최선을 다하겠습니다 !! ⭐ 출장마사지 최고의 서비스를 보장하는 센슈얼마사지홈케어 입니다. 언제 어디서든 찾아가 최상의 힐링을 한분한분 정성을 다해 관리해드리겠습니다. 저희 업소는 샵방문 및 홈타이 2가지 전부 가능합니다. 편안하게 연락주세요. ❤ 광주 나주 담양 화순 첨단지구 하남지구 순천 전남 전북 대전 지역 출장 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">단일 코스</span><span class="shop-card-tag">출장홈타이</span><span class="shop-card-tag">힐링출장</span><span class="shop-card-tag">힐링샵</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gwangju_theface_homecare_001">
+  <a href="shop-detail.html?id=gwangju_theface_homecare_001" aria-label="더페이스 상세보기">
+    <div class="shop-card-image">
+      <img src="images/광주출장마사지_더페이스.jpg" alt="더페이스" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">더페이스</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>광주</span></span>
+        <span>⏱ <span>오후 19시 ~ 새벽 5시 (폰이꺼진경우 : 마감, 랜덤 휴무, 문의시간 : 15시 부터 가능)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6987</span>
+      </div>
+      <p class="shop-card-greeting">광주 전지역 및 전남지역⭐20대 최강 미녀 &amp; 어디서든 달려가겠습니다. ♥ ⭐ 출장샵 최고의 서비스를 보장하는 더페이스 홈타이입니다. 주변에만 있으시다면 어디서든 달려 가겠습니다. 고객님의 힐링에 적극적으로 최선을 다하겠습니다. 광주 외 나주,화순,담양 지역에서 출장마사지 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링 스웨디시</span><span class="shop-card-tag">스페셜 마사지</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gyeongju_duson_homethai_001">
+  <a href="shop-detail.html?id=gyeongju_duson_homethai_001" aria-label="두손 홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/경주출장_두손홈타이.jpg" alt="두손 홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">두손 홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>경북 경주시</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">90,000원~</span>
+        <span class="shop-card-phone">0507-1859-7029</span>
+      </div>
+      <p class="shop-card-greeting">태국,중국 마사지⭐20대 관리사 &amp; 부드러운 손길로 마사지 받아보세요^^⭐ 안녕하세요. 최고의 서비스를 보장하는 경주 출장마사지 두손 홈타이입니다. 20대 관리사들로 부드러운 손길로 고객님의 힐링을 책임지겠습니다!</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gyeongnam_chokchok_homethai_001">
+  <a href="shop-detail.html?id=gyeongnam_chokchok_homethai_001" aria-label="촉촉홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/경남출장마사지_촉촉홈타이.jpg" alt="촉촉홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">촉촉홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>경남 전지역</span></span>
+        <span>⏱ <span>24시간 연중무휴 (폰이꺼진경우 : 마감OR랜덤휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-6379</span>
+      </div>
+      <p class="shop-card-greeting">경남출장마사지 ★ 20대~30대 실력있는 미모의 관리사 &amp; 부드러운 손길 !! ★ 경남출장마사지 최고의 서비스를 보장하는 촉촉 홈타이입니다. 최상의 서비스를 제공하겠습니다. 고객님의 피로와 스트레스를 풀어드리도록 최선을 다해 힐링을 도와드리겠습니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span><span class="shop-card-tag">투핸드</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="jeju_yeppuni_001">
+  <a href="shop-detail.html?id=jeju_yeppuni_001" aria-label="제주시 예뿌니 상세보기">
+    <div class="shop-card-image">
+      <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&amp;h=250&amp;fit=crop&amp;crop=center" alt="제주시 예뿌니" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">제주시 예뿌니</h2>
+        <div class="shop-card-rating">★ 4.7 <span>(89)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>제주 제주시</span></span>
+        <span>⏱ <span>10:00 - 24:00</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">110,000원~</span>
+        <span class="shop-card-phone">010-1234-5678</span>
+      </div>
+      <p class="shop-card-greeting">제주도 힐링 테라피 전문 업체. 자연 친화적인 환경에서 최상의 힐링을 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">힐링 테라피</span><span class="shop-card-tag">아로마 마사지</span><span class="shop-card-tag">스웨디시 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="jeongseong_homecare_001">
+  <a href="shop-detail.html?id=jeongseong_homecare_001" aria-label="정성홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_정성홈케어.jpg" alt="정성홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">정성홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>전북,전남,광주</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">130,000원~</span>
+        <span class="shop-card-phone">0507-1859-7133</span>
+      </div>
+      <p class="shop-card-greeting">출장마사지 부드러운 손길 ⭐힐링으로 모시겠습니다. 언제나 감사합니다 ⭐ 홈케어 최고의 서비스를 보장하는 정성 홈케어입니다. 어디든지 방문하여 최상의 힐링을 한분 한분 정성을 다해 선사해드리겠습니다. 전북,전남,광주 홈케어 전지역에서 출장마사지 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">홈케어 관리</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">아로마 마사지</span><span class="shop-card-tag">브라질리언 왁싱</span><span class="shop-card-tag">크리스탈 수정 디톡스</span><span class="shop-card-tag">황제코스</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="jeonju_smile_homethai_001">
+  <a href="shop-detail.html?id=jeonju_smile_homethai_001" aria-label="스마일홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/전주출장마사지_스마일홈타이.jpg" alt="스마일홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">스마일홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>전북 전주</span></span>
+        <span>⏱ <span>오후 6시 반 ~ 아침 6시 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-7135</span>
+      </div>
+      <p class="shop-card-greeting">전북 전주출장마사지_20대 최강 관리사 ⭐힐링 출장 &amp; 어디서든 달려가겠습니다. ♥ ⭐ 최고의 서비스를 보장하는 스마일 출장 입니다. 단골이 많은곳은 이유가 있습니다! 전원 20대 관리사 최선을 다해 힐링을 도와드리겠습니다. 전북 전주 전지역에서 출장마사지 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">크림마사지</span><span class="shop-card-tag">VIP 마사지</span><span class="shop-card-tag">힐링 마사지</span><span class="shop-card-tag">출장홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="pohang_homethai_001">
+  <a href="shop-detail.html?id=pohang_homethai_001" aria-label="포항홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/포항출장마사지_포항홈타이.jpg" alt="포항홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">포항홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>경북 포항시</span></span>
+        <span>⏱ <span>오후 6시 ~ 아침 6시 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6581</span>
+      </div>
+      <p class="shop-card-greeting">포항양덕건마_20대~30대 힐링샵 ⭐ 부드러운 손길 보유! 고객님의 힐링에 최선을 다하겠습니다. ⭐ 포항출장마사지 최고의 서비스를 보장하는 포항홈타이입니다. 20대 ~ 30대 최고의 힐링샵, 전문 자격증을 소지한 미모의 관리사들이 최상의 서비스를 제공하겠습니다. 고객님을 위해 빠른 방문과 확실한 힐링을 전해드리도록 하겠습니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="pohang_oneshop_homethai_001">
+  <a href="shop-detail.html?id=pohang_oneshop_homethai_001" aria-label="1인샵홈타이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/포항출장_1인샵홈타이.jpg" alt="1인샵홈타이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">1인샵홈타이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>경북 포항시 남구</span></span>
+        <span>⏱ <span>오후 6시 ~ 새벽 6시 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6845</span>
+      </div>
+      <p class="shop-card-greeting">포항홈타이_20대~30대 힐링샵 ⭐ 아늑한 공간에서 고객님께 힐링을 선사하겠습니다. ⭐ 포항출장마사지 최고의 서비스를 보장하는 1인샵홈타이입니다. 20대 ~ 30대 최고의 힐링샵, 부드러운 손길로 고객님께 힐링을 선사하겠습니다. 궁금한 사항 언제든지 전화주세요.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span><span class="shop-card-tag">1인샵</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_24hour_korean_japanese_001">
+  <a href="shop-detail.html?id=seoul_24hour_korean_japanese_001" aria-label="24시 한국일본혼혈 상세보기">
+    <div class="shop-card-image">
+      <img src="images/24시한국일본혼혈.jpg" alt="24시 한국일본혼혈" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">24시 한국일본혼혈</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 365일 연중무휴</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6753</span>
+      </div>
+      <p class="shop-card-greeting">서울.경기.인천 출장마사지 최고의 서비스를 보장하는 24시 한국일본혼혈출장 입니다. 최고의 마사지로 고객님께 보답하겠습니다. 20대 관리사 부드러운 손길로 최고의 대접을 선사하겠습니다. 전원 실력파 여 관리사들이 꾹꾹 시원 스포츠, 감미로운 오일마사지, 감성힐링 스웨디시, VVIP 특급마사지 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">오일 마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">VVIP 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_24hour_sexy_outcall_001">
+  <a href="shop-detail.html?id=seoul_24hour_sexy_outcall_001" aria-label="24시 슴살화끈색녀 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_슴살화끈색녀.jpg" alt="24시 슴살화끈색녀" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">24시 슴살화끈색녀</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(1)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울,경기,인천 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-7034</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 홈타이 최고의 서비스를 보장하는 24시 슴살화끈색녀 입니다. 고객님께서 언제 어디에 계시든 연락만 주신다면 발빠르게 뛰어가 밝은 미소 친절상담과 더불어 최고의 힐링을 제공해 드리겠습니다. 전원 실력파 여 쌤들로 구성되어 있으며, 20대 힐러 관리사들이 꾹꾹 시원 스포츠, 감미로운 오일마사지, 감성힐링 스웨디시, VVIP 특급마사지 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_bikini_outcall_001">
+  <a href="shop-detail.html?id=seoul_bikini_outcall_001" aria-label="비키니출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_비키니출장.jpg" alt="비키니출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">비키니출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(1)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울,경기,인천 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-7155</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장샵 최고의 서비스를 보장하는 비키니 출장 입니다. 어디서나 고객님이 불러주시면 30분 이내 달려가겠습니다. 부드러운 손길로 고객님께 힐링으로 보답하겠습니다. 전원 실력파 여 쌤들로 구성되어 있으며, 20대 미녀 관리사들이 힘빼 타이, 느낌 아로마, 비키니 VIP 힐링, 비키니 VVIP힐링 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_bj_sexy_outcall_001">
+  <a href="shop-detail.html?id=seoul_bj_sexy_outcall_001" aria-label="BJ 발정난 색끼년 출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_BJ발정난색끼년출장.jpg" alt="BJ 발정난 색끼년 출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">BJ 발정난 색끼년 출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(1)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울,경기,인천 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6859</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장마사지 최고의 서비스를 보장하는 BJ 발정난 색끼년 출장 입니다. 넘치는 사랑에 보답하도록 항상 노력하겠습니다. 빠른이동. 최고의마인드 최고의와꾸 한분한분 정성어린 손길로 편안한 힐링과 지친 심신의 안정을 약속 드리겠습니다. 전원 한국.태국 여 쌤들로 구성되어 있으며, 20대,30대 &amp; 힐링샵으로 상기 종목 테라피 과정 수료한 실력파 관리사들이 BJ 시원한 건식테라피, BJ성난 화끈한 Y존 스웨디시, BJ 성난 새끼년 자극적인 전신혼합 VVIP, BJ 성난 핫언니 센슈얼 스웨디…</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_instapretty_001">
+  <a href="shop-detail.html?id=seoul_instapretty_001" aria-label="20대 인스타이쁜이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/20대인스타이쁜이.jpg" alt="20대 인스타이쁜이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 인스타이쁜이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-7033</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 홈타이 최고의 서비스를 보장하는 20대 인스타이쁜이 입니다. 고객님께서 언제 어디에 계시든 연락만 주신다면 발빠르게 뛰어가 밝은 미소 친절상담과 더불어 최고의 힐링을 제공해 드리겠습니다. 전원 20대 실력파 여 관리사들이 꾹꾹 시원 스포츠, 감미로운 오일마사지, 감성힐링 스웨디시, VVIP 특급마사지 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">오일 마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">VVIP 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_japan_mixed_001">
+  <a href="shop-detail.html?id=seoul_japan_mixed_001" aria-label="재팬혼혈출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_재팬혼혈.jpg" alt="재팬혼혈출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">재팬혼혈출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">50,000원~</span>
+        <span class="shop-card-phone">0507-1859-6632</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장샵 최고의 서비스를 보장하는 1인 재팬혼혈출장 입니다. ★ 20대 최강 미녀 ★ 부드러운 손길과 행복한 마사지를 제공하는 관리사들로 최고의 실력과 힐링으로 보답하겠습니다. 전원 20대 혼혈인 여샘들이 타이 코스, 미끌 아로밍, 힐링 &amp; 스웨디시, VVIP 실장 추천코스, 스페셜 코스 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">타이 코스</span><span class="shop-card-tag">미끌 아로밍</span><span class="shop-card-tag">힐링 &amp; 스웨디시</span><span class="shop-card-tag">VVIP 실장 추천코스</span><span class="shop-card-tag">스페셜 코스</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_korean_pretty_001">
+  <a href="shop-detail.html?id=seoul_korean_pretty_001" aria-label="한국 20대 이쁜이 상세보기">
+    <div class="shop-card-image">
+      <img src="images/한국20대이쁜이.jpg" alt="한국 20대 이쁜이" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">한국 20대 이쁜이</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6753</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 홈타이 최고의 서비스를 보장하는 한국 20대 이쁜이 입니다. 고객님께서 언제 어디에 계시든 연락만 주신다면 발빠르게 뛰어가 밝은 미소 친절상담과 더불어 최고의 힐링을 제공해 드리겠습니다. 전원 20대 실력파 여 관리사들이 꾹꾹 시원 스포츠, 감미로운 오일마사지, 감성힐링 스웨디시, VVIP 특급마사지 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">오일 마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">VVIP 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_lingerie_hole_outcall_001">
+  <a href="shop-detail.html?id=seoul_lingerie_hole_outcall_001" aria-label="란제리 구멍 출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_란제리구멍출장.jpg" alt="란제리 구멍 출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">란제리 구멍 출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(1)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울,경기,인천 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6648</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장마사지 최고의 서비스를 보장하는 란제리구멍출장 입니다. 행복을 전달하는 출장 마사지샵이 되겠습니다. 언제나 최선을 다하겠습니다. 감사합니다. 전원 실력파 여 쌤들로 구성되어 있으며, 20대 &amp; 힐링샵으로 상기 종목 테라피 과정 수료한 실력파 관리사들이 란제리 꾸욱 건식테라피, 란제리 핫한 센슈얼스웨디시, 란제리 특별한 구멍 전신혼합 VVIP, 란제리 구멍언니 센슈얼 스웨디시 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_pretty_tangle_001">
+  <a href="shop-detail.html?id=seoul_pretty_tangle_001" aria-label="20대 이쁘니 탱글 출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/20대이쁘니탱글출장.jpg" alt="20대 이쁘니 탱글 출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 이쁘니 탱글 출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-6510</span>
+      </div>
+      <p class="shop-card-greeting">서울.경기.인천 전지역 출장마사지 최고의 서비스를 보장하는 20대 이쁘니 탱글 출장입니다. 전원 20대 긍정 마인드를 갖춘 실력파 관리사들이 꾹꾹 시원 스포츠, 감미로운 오일마사지, 감성힐링 스웨디시, VVIP 특급마사지, 믹스 코스, 한국인 스웨디시 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">오일 마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">VVIP 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_sohot_outcall_001">
+  <a href="shop-detail.html?id=seoul_sohot_outcall_001" aria-label="쏘핫 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_쏘핫.jpg" alt="쏘핫" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">쏘핫</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(1)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울,경기 서울·경기 전지역</span></span>
+        <span>⏱ <span>오후 8시 ~ 아침 06시 (폰OFF시: 마감OR랜덤휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">140,000원~</span>
+        <span class="shop-card-phone">0507-1859-7050</span>
+      </div>
+      <p class="shop-card-greeting">서울출장마시지 최고의 서비스를 보장하는 쏘핫 인사드립니다. 전원 20대 미녀 한국&amp;일본인 관리사로 우아하고 건강하게 고객님들께 최고의 힐링을 선사해드리겠습니다. 서울 . 경기 전 지역을 중심으로 관리하며, 스웨디시, 일본인 스웨디시 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_tokyo_hot_001">
+  <a href="shop-detail.html?id=seoul_tokyo_hot_001" aria-label="도쿄핫 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_도쿄핫.jpg" alt="도쿄핫" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">도쿄핫</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 365일 연중무휴</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6415</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장마사지 최고의 서비스를 보장하는 도쿄 핫 입니다. 오직 도쿄 핫에서 느껴보실수 있는 소통 200% 가능 동남아 혼혈관리사들 전원 20대 재방문 200%보장. 전원 접종 완료된 코로나예방 관리사들이 힘 쿵, 심 쿵, 짜릿 스웨디시, 도쿄핫VIP 힐링힙업, 도쿄핫VVIP 극찬코스, 이쁜 한국인 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">힘 쿵</span><span class="shop-card-tag">심 쿵</span><span class="shop-card-tag">짜릿 스웨디시</span><span class="shop-card-tag">도쿄핫VIP</span><span class="shop-card-tag">도쿄핫VVIP</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_tpanty_callgirl_001">
+  <a href="shop-detail.html?id=seoul_tpanty_callgirl_001" aria-label="T팬티 콜걸 상세보기">
+    <div class="shop-card-image">
+      <img src="images/T팬티콜걸.jpg" alt="T팬티 콜걸" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">T팬티 콜걸</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6585</span>
+      </div>
+      <p class="shop-card-greeting">서울 인천 경기 최고의 서비스를 보장하는 T팬티 콜걸 입니다. 단골이 많은곳은 이유가 있습니다! 전원 20대 미녀 최선을 다해 힐링을 도와드리겠습니다. 전원 20대 실력파 여 관리사들이 T팬티 예선전(건식테라피), T팬티 본선전(센슈얼스웨디시), T팬티 결승전(전신혼합 VVIP), T팬티 부비부비(센슈얼 스웨디시) 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">건식테라피</span><span class="shop-card-tag">센슈얼스웨디시</span><span class="shop-card-tag">VVIP 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_ukraine_001">
+  <a href="shop-detail.html?id=seoul_ukraine_001" aria-label="우크라이나출장 상세보기">
+    <div class="shop-card-image">
+      <img src="images/우크라이나출장.jpg" alt="우크라이나출장" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">우크라이나출장</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">70,000원~</span>
+        <span class="shop-card-phone">0507-1859-7033</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 홈타이 최고의 서비스를 보장하는 우크라이나 출장 입니다. 고객님께서 언제 어디에 계시든 연락만 주신다면 발빠르게 뛰어가 밝은 미소 친절상담과 더불어 최고의 힐링을 제공해 드리겠습니다. 전원 20대 실력파 여 관리사들이 꾹꾹 시원 스포츠, 감미로운 오일마사지, 감성힐링 스웨디시, VVIP 특급마사지, 믹스 코스, 한국인 스웨디시 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">오일 마사지</span><span class="shop-card-tag">스웨디시</span><span class="shop-card-tag">VVIP 마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_vip_20s_healing_korean_homecare_001">
+  <a href="shop-detail.html?id=seoul_vip_20s_healing_korean_homecare_001" aria-label="VIP 20대 힐링 한국홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_vip20대힐링_한국홈케어.jpg" alt="VIP 20대 힐링 한국홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">VIP 20대 힐링 한국홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(1)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울,인천,경기 서울·인천·경기 전지역</span></span>
+        <span>⏱ <span>24시간 연중무휴 (폰이꺼진경우: 마감OR랜덤휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">130,000원~</span>
+        <span class="shop-card-phone">0507-1859-6680</span>
+      </div>
+      <p class="shop-card-greeting">어디서나 편안하게 받을 수 있는 마사지 서울,경기,인천 전지역 VIP 20대 힐링 한국 홈케어 입니다. 20대 어린 경력 관리사가 직접 방문해 관리하여 드리는 홈케어 서비스입니다. 전원 한국인 여 쌤들로 구성되어 있으며, 20대 &amp; 힐링샵으로 스웨디시 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_vvip_goddess_korean_001">
+  <a href="shop-detail.html?id=seoul_vvip_goddess_korean_001" aria-label="VVIP 20대 여신 한국인홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="images/VVIP20대여신한국인홈케어.jpg" alt="VVIP 20대 여신 한국인홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">VVIP 20대 여신 한국인홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 (폰이 꺼진 경우: 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">100,000원~</span>
+        <span class="shop-card-phone">0507-1859-6946</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장샵 최고의 서비스를 보장하는 VVIP 20대 여신 한국인홈케어 입니다. 어디서나 고객님이 불러주시면 최대한 빠르게 달려가겠습니다. 부드러운 손길로 고객님께 힐링으로 보답하겠습니다. 전원 20대 한국인 여 관리사들이 VIP 스웨디시 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">VIP 스웨디시</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="seoul_wonjeong_001">
+  <a href="shop-detail.html?id=seoul_wonjeong_001" aria-label="원정녀 상세보기">
+    <div class="shop-card-image">
+      <img src="images/출장마사지_원정녀.jpg" alt="원정녀" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">원정녀</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(0)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>서울 서울·경기·인천 전지역</span></span>
+        <span>⏱ <span>24시간 365일 연중무휴</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6415</span>
+      </div>
+      <p class="shop-card-greeting">서울.인천.경기 출장마사지 최고의 서비스를 보장하는 원정녀 입니다. 한국이 좋아 원정왓습니다. 핫하게 짜릿하게 도와드릴게요. 관리사 전원 20대 재방문 보장 총알방문 연락주세요. 환상케어 보장. 전원 실력파 여 쌤들이 건강 케어, 끈적 오일, 끈적 힙업힐링, 원정녀 황제 VIP, VVIP 원정 풀, 레전드 한국인 등 다양한 프로그램으로 최상의 힐링을 선사합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">건강 케어</span><span class="shop-card-tag">끈적 오일</span><span class="shop-card-tag">끈적 힙업힐링</span><span class="shop-card-tag">원정녀 황제 VIP</span><span class="shop-card-tag">VVIP 원정 풀</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<!-- AUTO_SHOP_GRID_END --></div>
+      </section>
+    </main>
+
+    <nav class="bottom-category-bar" id="bottom-category-bar">
+      <button type="button" class="cat-btn is-active" data-category="outcall" id="cat-btn-outcall">
+        출장마사지
+      </button>
+      <button type="button" class="cat-btn" data-category="shop" id="cat-btn-shop">
+        마사지
+      </button>
+    </nav>
+
+    <section class="footer-note">
+      이 페이지는 정적 HTML과 JavaScript만으로 구성된 <strong>전국 출장마사지·홈타이 검색 데모</strong>입니다.
+      상단 카드 데이터는 <code>shop-card-data.js</code>와 <code>shops.json</code>을 기반으로 자동 렌더링되며,
+      지역 키워드는 <code>korea-regions.json</code>, <code>korea-hot-subdistricts.json</code>를 이용해
+      <strong>서울출장마사지</strong>, <strong>부산해운대출장마사지</strong>, <strong>제주연동마사지</strong>와 같은
+      다양한 조합 키워드를 만들어 검색 노출을 넓히는 구조로 설계되어 있습니다.
+    </section>
+  </div>
+
+  <!-- 상단 카드/검색/키워드 렌더링 스크립트 -->
+  <script src="shop-card-data.js"></script>
+  <script src="shops.json"></script>
+  <script src="shop-resolve.js"></script>
+  <script>
+    (function () {
+      const searchInput = document.getElementById('shop-search-input');
+      const clearBtn = document.getElementById('search-clear-btn');
+      const gridEl = document.getElementById('shop-card-grid');
+      const resultTextEl = document.getElementById('result-count-text');
+      const pillsEl = document.getElementById('quick-region-pills');
+      const regionKeywordEl = document.getElementById('region-keyword-list');
+      const keywordToggleBtn = document.getElementById('keyword-toggle-btn');
+      const keywordAnchorEl = keywordToggleBtn.closest('.keyword-anchor');
+      const regionSelect = document.getElementById('region-select');
+      const citySelect = document.getElementById('city-select');
+      const subdistrictSelect = document.getElementById('subdistrict-select');
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      /** 카드 데이터 + shops.json 전체 합쳐 홈에서 모두 노출 */
+      function buildAllShopCards() {
+        const rawList = (window.shopCardData || []).slice();
+        const shopsArr = (window.shopsData && window.shopsData.shops) || [];
+        const usedShopIds = new Set();
+        if (window.shopResolve && shopsArr.length) {
+          rawList.forEach((c) => {
+            const sh = window.shopResolve.findShopByCard(c, shopsArr);
+            if (sh && sh.id != null) usedShopIds.add(String(sh.id));
+          });
+        }
+        const shopOnlyRows = shopsArr
+          .filter((s) => s && s.id != null && !usedShopIds.has(String(s.id)))
+          .map((s) => ({
+            id: s.id,
+            name: s.name,
+            type: s.type,
+            region: s.region,
+            district: s.district,
+            dong: s.dong || '',
+            address: s.address,
+            detailAddress: s.detailAddress,
+            phone: s.phone,
+            rating: s.rating,
+            reviewCount: s.reviewCount,
+            price: s.price,
+            description: s.description,
+            image: s.image,
+            alt: s.name,
+            services: Array.isArray(s.services) ? s.services : [],
+            tags: Array.isArray(s.tags) ? s.tags : [],
+            operatingHours: s.operatingHours,
+            showHealingShop: false,
+            _fromShopsJsonOnly: true,
+          }));
+
+        const healingGroup = rawList.filter((s) => s.showHealingShop);
+        const normalGroup = rawList.filter((s) => !s.showHealingShop);
+        return [
+          ...shuffle(healingGroup),
+          ...shuffle(normalGroup),
+          ...shuffle(shopOnlyRows),
+        ];
+      }
+
+      const allShopCards = buildAllShopCards();
+      /** 'outcall' = 출장마사지, 'shop' = 일반 마사지(샵) */
+      let categoryMode = 'outcall';
+
+      function isOutcallItem(item) {
+        const typeStr = (item.type || '').toString();
+        if (/출장/i.test(typeStr)) return true;
+        if (typeStr === '출장마사지') return true;
+        const svcs = item.services || [];
+        if (Array.isArray(svcs) && svcs.some((s) => /출장|홈타이|방문/i.test(String(s)))) return true;
+        const blob = [item.name, item.description, item.greeting || '']
+          .filter(Boolean)
+          .join(' ');
+        if (/출장마사지|출장안마|홈타이|방문마사지/i.test(blob)) return true;
+        return false;
+      }
+
+      function getListForCategory() {
+        if (categoryMode === 'outcall') return allShopCards.filter(isOutcallItem);
+        return allShopCards.filter((it) => !isOutcallItem(it));
+      }
+
+      function cardImageSrc(item) {
+        const shopsArr = (window.shopsData && window.shopsData.shops) || [];
+        if (window.shopResolve) {
+          let shop = null;
+          if (item._fromShopsJsonOnly) {
+            shop = shopsArr.find((s) => String(s.id) === String(item.id));
+          }
+          if (!shop) shop = window.shopResolve.findShopByCard(item, shopsArr);
+          return window.shopResolve.resolveImage(item, shop) || '';
+        }
+        return item.image || '';
+      }
+
+      function renderDistrictPills(selectedRegion) {
+        pillsEl.innerHTML = '';
+        if (!regionData || !regionData.regions) return;
+
+        if (!selectedRegion) {
+          const guide = document.createElement('span');
+          guide.className = 'pill';
+          guide.textContent = '먼저 지역을 선택하면 시/구가 표시됩니다';
+          guide.style.cursor = 'default';
+          pillsEl.appendChild(guide);
+          return;
+        }
+
+        const regionObj = regionData.regions.find((x) => x.name === selectedRegion);
+        if (!regionObj || !Array.isArray(regionObj.districts) || regionObj.districts.length === 0) {
+          const empty = document.createElement('span');
+          empty.className = 'pill';
+          empty.textContent = '해당 지역 시/구 데이터 없음';
+          empty.style.cursor = 'default';
+          pillsEl.appendChild(empty);
+          return;
+        }
+
+        regionObj.districts.forEach((district) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'pill';
+          btn.textContent = district;
+          btn.addEventListener('click', () => {
+            citySelect.value = district;
+            handleCityChange();
+            Array.from(pillsEl.children).forEach((c) => c.classList.remove('active'));
+            btn.classList.add('active');
+          });
+          pillsEl.appendChild(btn);
+        });
+      }
+
+      const REGION_FALLBACK = {
+        regions: [
+          { name: '서울', districts: ['종로', '중구', '용산', '성동', '광진', '동대문', '중랑', '성북', '강북', '도봉', '노원', '은평', '서대문', '마포', '양천', '강서', '구로', '금천', '영등포', '동작', '관악', '서초', '강남', '송파', '강동'] },
+          { name: '부산', districts: ['중구', '서구', '동구', '영도', '부산진', '동래', '남구', '북구', '강서구', '해운대', '사하', '금정', '연제', '수영', '사상', '기장'] },
+          { name: '인천', districts: ['중구', '동구', '미추홀', '연수', '남동', '부평', '계양', '서구', '강화', '옹진'] },
+          { name: '대구', districts: ['중구', '동구', '서구', '남구', '북구', '수성', '달서', '달성', '군위'] },
+          { name: '광주', districts: ['동구', '서구', '남구', '북구', '광산'] },
+          { name: '대전', districts: ['동구', '중구', '서구', '유성', '대덕'] },
+          { name: '울산', districts: ['중구', '남구', '동구', '북구', '울주'] },
+          { name: '세종', districts: [] },
+          { name: '경기', districts: ['가평', '고양', '과천', '광명', '광주', '구리', '군포', '김포', '남양주', '동두천', '부천', '성남', '수원', '시흥', '안산', '안성', '안양', '양주', '양평', '여주', '연천', '오산', '용인', '의왕', '의정부', '이천', '파주', '평택', '포천', '하남', '화성'] },
+          { name: '강원', districts: ['원주', '춘천', '강릉', '동해', '속초', '삼척', '홍천', '태백', '철원', '횡성', '평창', '영월', '정선', '인제', '고성', '양양', '화천', '양구'] },
+          { name: '충북', districts: ['청주', '충주', '제천', '보은', '옥천', '영동', '증평', '진천', '괴산', '음성', '단양'] },
+          { name: '충남', districts: ['천안', '공주', '보령', '아산', '서산', '논산', '계룡', '당진', '금산', '부여', '서천', '청양', '홍성', '예산', '태안'] },
+          { name: '경북', districts: ['포항', '경주', '김천', '안동', '구미', '영주', '영천', '상주', '문경', '경산', '의성', '청송', '영양', '영덕', '청도', '고령', '성주', '칠곡', '예천', '봉화', '울진', '울릉'] },
+          { name: '경남', districts: ['창원', '김해', '진주', '양산', '거제', '통영', '사천', '밀양', '함안', '거창', '창녕', '고성', '하동', '합천', '남해', '함양', '산청', '의령'] },
+          { name: '전북', districts: ['전주', '익산', '군산', '정읍', '완주', '김제', '남원', '고창', '부안', '임실', '순창', '진안', '장수', '무주'] },
+          { name: '전남', districts: ['여수', '순천', '목포', '광양', '나주', '무안', '해남', '고흥', '화순', '영암', '영광', '완도', '담양', '장성', '보성', '신안', '장흥', '강진', '함평', '진도', '곡성', '구례'] },
+          { name: '제주', districts: ['제주', '서귀포'] }
+        ]
+      };
+
+      let regionData = null;
+      let hotData = null;
+
+      const HOT_SUB_VAL_SEP = '|||';
+      function buildStaticRegionPageUrl(region, district) {
+        if (district) {
+          return 'static-pages/' + (region || '') + '--' + district + '.html';
+        }
+        return 'static-pages/' + (region || '') + '.html';
+      }
+      function normalizeDistrictName(name) {
+        return String(name || '')
+          .replace(/\s+/g, '')
+          .replace(/(시|군|구)$/, '');
+      }
+
+      /** korea-hot-subdistricts: 지역만 고를 때도 동/읍/면 전부, 시/구 고르면 해당 구만 */
+      function fillSubdistrictOptions(selectedRegion, selectedCity) {
+        subdistrictSelect.innerHTML = '<option value=\"\">전체</option>';
+        if (!selectedRegion || !hotData) {
+          subdistrictSelect.disabled = true;
+          return;
+        }
+        const hr = hotData.regions.find((x) => x.region === selectedRegion);
+        if (!hr || !Array.isArray(hr.cities)) {
+          subdistrictSelect.disabled = true;
+          return;
+        }
+        let count = 0;
+        hr.cities.forEach((city) => {
+          if (
+            selectedCity &&
+            normalizeDistrictName(city.district) !== normalizeDistrictName(selectedCity)
+          ) return;
+          (city.subdistricts || []).forEach((sub) => {
+            count += 1;
+            const opt = document.createElement('option');
+            opt.value = city.district + HOT_SUB_VAL_SEP + sub;
+            opt.textContent = selectedCity ? sub : city.district + ' · ' + sub;
+            subdistrictSelect.appendChild(opt);
+          });
+        });
+        subdistrictSelect.disabled = count === 0;
+      }
+
+      function syncSearchFromSelects() {
+        const r = regionSelect.value;
+        let c = citySelect.value;
+        let sRaw = subdistrictSelect.value;
+        let s = sRaw;
+        if (sRaw && sRaw.indexOf(HOT_SUB_VAL_SEP) !== -1) {
+          const segs = sRaw.split(HOT_SUB_VAL_SEP);
+          const dFromSub = segs[0];
+          const subOnly = segs[1] || '';
+          s = subOnly;
+          if (dFromSub && !c) {
+            citySelect.value = dFromSub;
+            c = dFromSub;
+          }
+        }
+        const parts = [];
+        if (r) parts.push(r);
+        if (c) parts.push(c);
+        if (s) parts.push(s);
+        if (parts.length === 0) {
+          searchInput.value = '';
+        } else {
+          const suffix = categoryMode === 'outcall' ? ' 출장마사지' : ' 마사지';
+          searchInput.value = parts.join(' ') + suffix;
+        }
+        handleSearch();
+      }
+
+      function renderRegionSelects() {
+        if (!regionData) return;
+        regionSelect.innerHTML = '<option value=\"\">전체</option>';
+        regionData.regions.forEach((r) => {
+          const opt = document.createElement('option');
+          opt.value = r.name;
+          opt.textContent = r.name;
+          regionSelect.appendChild(opt);
+        });
+        renderDistrictPills('');
+      }
+
+      function handleRegionChange() {
+        const selectedRegion = regionSelect.value;
+        citySelect.innerHTML = '<option value=\"\">전체</option>';
+        subdistrictSelect.innerHTML = '<option value=\"\">전체</option>';
+        citySelect.disabled = !selectedRegion;
+
+        renderDistrictPills(selectedRegion);
+
+        if (!selectedRegion || !regionData) {
+          subdistrictSelect.disabled = true;
+          syncSearchFromSelects();
+          return;
+        }
+
+        const r = regionData.regions.find((x) => x.name === selectedRegion);
+        if (r && Array.isArray(r.districts)) {
+          r.districts.forEach((d) => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            citySelect.appendChild(opt);
+          });
+        }
+
+        fillSubdistrictOptions(selectedRegion, '');
+        /* 요청: 지역 클릭 시 정적 페이지 이동 */
+        window.location.href = buildStaticRegionPageUrl(selectedRegion, '');
+      }
+
+      function handleCityChange() {
+        const selectedRegion = regionSelect.value;
+        const selectedCity = citySelect.value;
+
+        Array.from(pillsEl.children).forEach((c) => {
+          c.classList.toggle('active', c.textContent === selectedCity && !!selectedCity);
+        });
+
+        if (!selectedRegion) {
+          subdistrictSelect.innerHTML = '<option value=\"\">전체</option>';
+          subdistrictSelect.disabled = true;
+          syncSearchFromSelects();
+          return;
+        }
+
+        fillSubdistrictOptions(selectedRegion, selectedCity || '');
+        if (selectedCity) {
+          /* 요청: 시/구 클릭 시 정적 페이지 이동 */
+          window.location.href = buildStaticRegionPageUrl(selectedRegion, selectedCity);
+          return;
+        }
+        syncSearchFromSelects();
+      }
+
+      function handleSubdistrictChange() {
+        const v = subdistrictSelect.value;
+        if (v && v.indexOf(HOT_SUB_VAL_SEP) !== -1) {
+          const dPart = v.split(HOT_SUB_VAL_SEP)[0];
+          if (dPart && normalizeDistrictName(citySelect.value) !== normalizeDistrictName(dPart)) {
+            const matchedOpt = Array.from(citySelect.options).find((opt) => {
+              return normalizeDistrictName(opt.value) === normalizeDistrictName(dPart);
+            });
+            citySelect.value = matchedOpt ? matchedOpt.value : dPart;
+            Array.from(pillsEl.children).forEach((c) => {
+              c.classList.toggle(
+                'active',
+                normalizeDistrictName(c.textContent) === normalizeDistrictName(citySelect.value)
+              );
+            });
+          }
+        }
+        syncSearchFromSelects();
+      }
+
+      function createCard(item) {
+        const article = document.createElement('article');
+        article.className = 'shop-card';
+        article.setAttribute('data-id', item.id);
+
+        const link = document.createElement('a');
+        link.href = 'shop-detail.html?id=' + encodeURIComponent(item.id);
+        link.setAttribute('aria-label', (item.name || '업체') + ' 상세보기');
+
+        const thumb = document.createElement('div');
+        thumb.className = 'shop-card-image';
+        const img = document.createElement('img');
+        const src = cardImageSrc(item);
+        img.src = src;
+        img.alt = item.alt || item.name || '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.onerror = function () {
+          thumb.style.display = 'none';
+        };
+        thumb.appendChild(img);
+
+        const body = document.createElement('div');
+        body.className = 'shop-card-body';
+
+        const hdr = document.createElement('div');
+        hdr.className = 'shop-card-header';
+
+        const h2 = document.createElement('h2');
+        h2.className = 'shop-card-title';
+        h2.textContent = item.name || '';
+
+        const ratingRow = document.createElement('div');
+        ratingRow.className = 'shop-card-rating';
+        ratingRow.appendChild(document.createTextNode('★ ' + (item.rating != null ? item.rating : '-') + ' '));
+        const rcSpan = document.createElement('span');
+        rcSpan.textContent =
+          '(' + (item.reviewCount != null ? item.reviewCount : '-') + ')';
+        ratingRow.appendChild(rcSpan);
+
+        hdr.appendChild(h2);
+        hdr.appendChild(ratingRow);
+
+        function metaLine(emoji, text) {
+          const outer = document.createElement('span');
+          outer.appendChild(document.createTextNode(emoji + ' '));
+          const inner = document.createElement('span');
+          inner.textContent = text;
+          outer.appendChild(inner);
+          return outer;
+        }
+
+        const metaBlock = document.createElement('div');
+        metaBlock.className = 'shop-card-meta';
+        metaBlock.appendChild(
+          metaLine(
+            '📍',
+            [item.region, item.district, item.dong].filter(Boolean).join(' ')
+          )
+        );
+        metaBlock.appendChild(metaLine('⏱', item.operatingHours || '상담 시 안내'));
+
+        const priceRow = document.createElement('div');
+        priceRow.className = 'shop-card-price-row';
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'shop-card-price';
+        priceSpan.textContent = item.price || '가격 상담';
+        const phoneSpan = document.createElement('span');
+        phoneSpan.className = 'shop-card-phone';
+        phoneSpan.textContent = item.phone || '문의 시 안내';
+        priceRow.appendChild(priceSpan);
+        priceRow.appendChild(phoneSpan);
+
+        const greet = document.createElement('p');
+        greet.className = 'shop-card-greeting';
+        const g = String(item.greeting || item.description || '').trim();
+        greet.textContent = g.slice(0, 280) + (g.length > 280 ? '…' : '');
+
+        const tagsWrap = document.createElement('div');
+        tagsWrap.className = 'shop-card-tags';
+        (item.services || []).slice(0, 6).forEach((svc) => {
+          const span = document.createElement('span');
+          span.className = 'shop-card-tag';
+          span.textContent = svc;
+          tagsWrap.appendChild(span);
+        });
+
+        const foot = document.createElement('div');
+        foot.className = 'shop-card-footer';
+        const linkLbl = document.createElement('span');
+        linkLbl.className = 'shop-card-link';
+        linkLbl.appendChild(document.createTextNode('상세 보기 '));
+        const arr = document.createElement('span');
+        arr.textContent = '↗';
+        linkLbl.appendChild(arr);
+        foot.appendChild(linkLbl);
+
+        body.appendChild(hdr);
+        body.appendChild(metaBlock);
+        body.appendChild(priceRow);
+        body.appendChild(greet);
+        body.appendChild(tagsWrap);
+        body.appendChild(foot);
+
+        link.appendChild(thumb);
+        link.appendChild(body);
+        article.appendChild(link);
+
+        return article;
+      }
+
+      /** 검색어에 공백이 있어도 되도록 단어(토큰) 단위 AND 매칭 */
+      function buildSearchHaystack(s) {
+        const reviewBlob = (s.reviews || [])
+          .map(function (r) {
+            return [r.review, r.comment, r.author, r.name].filter(Boolean).join(' ');
+          })
+          .join(' ');
+        return [
+          s.name,
+          s.region,
+          s.district,
+          s.dong,
+          s.address,
+          s.detailAddress,
+          s.description,
+          s.greeting,
+          s.type,
+          (s.services || []).join(' '),
+          (s.tags || []).join(' '),
+          reviewBlob,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+      }
+
+      function tokenMatchesHay(hay, token) {
+        if (!token) return true;
+        if (hay.indexOf(token) !== -1) return true;
+        if (token === '출장마사지' || token === '출장안마') {
+          return /출장|홈타이|방문|홈케어/.test(hay);
+        }
+        if (token === '마사지') {
+          return /마사지|스웨디시|테라피|왁싱/.test(hay);
+        }
+        return false;
+      }
+
+      function handleSearch() {
+        const q = (searchInput.value || '').trim();
+        const lc = q.toLowerCase();
+        const baseList = getListForCategory();
+        let filtered = baseList;
+
+        if (lc) {
+          const tokens = lc.split(/\s+/).filter(function (t) {
+            return t.length > 0;
+          });
+          filtered = baseList.filter(function (s) {
+            const hay = buildSearchHaystack(s);
+            return tokens.every(function (t) {
+              return tokenMatchesHay(hay, t);
+            });
+          });
+        }
+
+        gridEl.innerHTML = '';
+        filtered.forEach((item) => {
+          gridEl.appendChild(createCard(item));
+        });
+
+        const catLabel = categoryMode === 'outcall' ? '출장마사지' : '마사지';
+        if (!lc) {
+          resultTextEl.textContent = `${catLabel} · 전국 ${filtered.length}개 카드`;
+        } else {
+          resultTextEl.textContent = `${catLabel} · “${q}” 검색 ${filtered.length}개`;
+        }
+      }
+
+      const catBtnOutcall = document.getElementById('cat-btn-outcall');
+      const catBtnShop = document.getElementById('cat-btn-shop');
+      function setCategory(mode) {
+        categoryMode = mode;
+        catBtnOutcall.classList.toggle('is-active', mode === 'outcall');
+        catBtnShop.classList.toggle('is-active', mode === 'shop');
+        /* 하단 탭 바꾼 뒤에도 지역 선택값이 있으면 검색 문구 접미사 맞춤 */
+        const hasArea = regionSelect.value || citySelect.value || subdistrictSelect.value;
+        if (hasArea) syncSearchFromSelects();
+        else handleSearch();
+      }
+      catBtnOutcall.addEventListener('click', () => setCategory('outcall'));
+      catBtnShop.addEventListener('click', () => setCategory('shop'));
+
+      function renderRegionKeywords() {
+        Promise.all([
+          fetch('korea-regions.json').then((r) => r.json()).catch(() => null),
+          fetch('korea-hot-subdistricts.json').then((r) => r.json()).catch(() => null),
+        ]).then(([regions, hot]) => {
+          regionData = (regions && regions.regions) ? regions : REGION_FALLBACK;
+          hotData = hot || null;
+          renderRegionSelects();
+          const hotMap = {};
+          if (hot && Array.isArray(hot.regions)) {
+            hot.regions.forEach((r) => {
+              hotMap[r.region] = r.cities || [];
+            });
+          }
+
+          /** 동/읍/면 이름 전국 중복 횟수 → 칩에 지역 접두 */
+          const subNameCounts = {};
+          if (hot && Array.isArray(hot.regions)) {
+            hot.regions.forEach((hr) => {
+              (hr.cities || []).forEach((city) => {
+                (city.subdistricts || []).forEach((sub) => {
+                  subNameCounts[sub] = (subNameCounts[sub] || 0) + 1;
+                });
+              });
+            });
+          }
+
+          const frag = document.createDocumentFragment();
+          regionData.regions.forEach((r) => {
+            const regionName = r.name;
+            // 시/도 레벨 키워드
+            const chipRegion = document.createElement('a');
+            chipRegion.href = buildStaticRegionPageUrl(regionName, '');
+            chipRegion.className = 'region-chip';
+            chipRegion.textContent = regionName + '출장마사지';
+            frag.appendChild(chipRegion);
+
+            // 시/구 레벨
+            (r.districts || []).forEach((d) => {
+              const label =
+                d.indexOf('구') === -1 &&
+                d.indexOf('시') === -1 &&
+                d.indexOf('군') === -1
+                  ? d + '출장마사지'
+                  : regionName + d + '출장마사지';
+              const chip = document.createElement('a');
+              chip.href = buildStaticRegionPageUrl(regionName, d);
+              chip.className = 'region-chip';
+              chip.textContent = label;
+              frag.appendChild(chip);
+            });
+
+            // 동/읍/면 (korea-hot-subdistricts) — 칩: 서면출장마사지 / 중복 시 부산 서면출장마사지
+            const hotCities = hotMap[regionName] || [];
+            hotCities.forEach((city) => {
+              (city.subdistricts || []).forEach((sub) => {
+                const ambiguous = subNameCounts[sub] > 1;
+                const chipText = ambiguous ? regionName + ' ' + sub + '출장마사지' : sub + '출장마사지';
+                const searchPhrase = ambiguous
+                  ? regionName + ' ' + sub + ' 출장마사지'
+                  : sub + ' 출장마사지';
+                const chip = document.createElement('a');
+                chip.href = '#';
+                chip.className = 'region-chip';
+                chip.textContent = chipText;
+                chip.title = searchPhrase;
+                chip.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  searchInput.value = searchPhrase;
+                  handleSearch();
+                });
+                frag.appendChild(chip);
+              });
+            });
+          });
+
+          regionKeywordEl.innerHTML = '';
+          regionKeywordEl.appendChild(frag);
+
+          if (regionSelect.value) {
+            fillSubdistrictOptions(regionSelect.value, citySelect.value || '');
+          }
+        });
+      }
+
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        regionSelect.value = '';
+        citySelect.innerHTML = '<option value=\"\">전체</option>';
+        citySelect.disabled = true;
+        subdistrictSelect.innerHTML = '<option value=\"\">전체</option>';
+        subdistrictSelect.disabled = true;
+        renderDistrictPills('');
+        handleSearch();
+      });
+      searchInput.addEventListener('input', handleSearch);
+      regionSelect.addEventListener('change', handleRegionChange);
+      citySelect.addEventListener('change', handleCityChange);
+      subdistrictSelect.addEventListener('change', handleSubdistrictChange);
+      keywordToggleBtn.addEventListener('click', () => {
+        const isCollapsed = regionKeywordEl.classList.contains('is-collapsed');
+        regionKeywordEl.classList.toggle('is-collapsed', !isCollapsed);
+        keywordToggleBtn.textContent = isCollapsed ? '키워드 숨기기' : '키워드 보기';
+        keywordToggleBtn.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+      });
+      // 마우스 올리면 자동 표시
+      keywordToggleBtn.addEventListener('mouseenter', () => {
+        regionKeywordEl.classList.remove('is-collapsed');
+        keywordToggleBtn.textContent = '키워드 숨기기';
+        keywordToggleBtn.setAttribute('aria-expanded', 'true');
+      });
+      if (keywordAnchorEl) {
+        keywordAnchorEl.addEventListener('mouseleave', () => {
+          regionKeywordEl.classList.add('is-collapsed');
+          keywordToggleBtn.textContent = '키워드 보기';
+          keywordToggleBtn.setAttribute('aria-expanded', 'false');
+        });
+      }
+
+      handleSearch();
+      renderRegionKeywords();
+      const initQ = new URLSearchParams(window.location.search).get('q');
+      if (initQ) {
+        searchInput.value = initQ;
+        handleSearch();
+      }
+    })();
+  </script>
+</body>
+</html>
+

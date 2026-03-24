@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>여수 출장마사지 | 여신 홈타이 힐링업체</title>
+  <meta name="description" content="여수 프리미엄 출장안마·홈타이를 찾는 분들을 위한 시·구 맞춤 안내입니다. 실력파·인기 많은 힐링을 검색해 보세요." />
+  <style>
+    :root { --bg:#050816; --text:#e5e7eb; --soft:#9ca3af; --border:#1f2933; --radius:18px; --primary-soft: rgba(99, 102, 241, 0.12); }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Pretendard",system-ui,sans-serif; background:radial-gradient(circle at top,#111827 0,#020617 50%,#000 100%); color:var(--text); }
+    .page { max-width: 980px; margin: 0 auto; padding: 24px 16px 72px; }
+    .top { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:14px; }
+    .logo { font-size:18px; font-weight:700; color:var(--text); text-decoration:none; display:inline-block; }
+    .logo:hover { opacity:0.92; }
+    .back { font-size:12px; color:var(--soft); border:1px solid var(--border); border-radius:999px; padding:5px 10px; text-decoration:none; }
+    .card { background:rgba(15,23,42,.9); border:1px solid var(--border); border-radius:var(--radius); padding:18px 16px 22px; display:flex; flex-direction:column; }
+    h1 { margin:0 0 8px; font-size:23px; }
+    .intro { font-size:13px; color:var(--soft); line-height:1.7; margin-bottom:10px; }
+    .search-bar {
+      margin: 24px 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(8px, 1.8vw, 10px);
+      padding: clamp(10px, 2vw, 12px) clamp(10px, 2vw, 12px) clamp(12px, 2.6vw, 14px);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 55px rgba(2, 6, 23, 0.55);
+    }
+    .search-input-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .search-input-wrap { flex: 1 1 220px; position: relative; }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 10px 36px 10px 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(2, 6, 23, 0.55);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+    .search-input-wrap input:focus {
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+    }
+    .search-input-wrap input::placeholder { color: #6b7280; }
+    .search-input-wrap span.icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 14px; color: #6b7280; }
+    .search-input-wrap button.clear-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; color: #6b7280; font-size: 16px; cursor: pointer; }
+    .pill-filters { display: flex; flex-wrap: wrap; gap: 6px; font-size: 11px; }
+    #quick-region-pills { display:none !important; }
+    /* search-bar select 배치: 모바일은 2열 그리드, PC는 4열 그리드 */
+    .select-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+      align-items: end;
+    }
+    .select-row label { color: var(--soft); font-size: 11px; margin-right: 2px; }
+    .select-row select {
+      min-width: 110px;
+      padding: 6px 24px 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: rgba(2, 6, 23, 0.52);
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+      appearance: none;
+      position: relative;
+    }
+    .select-row select:focus,
+    .select-row select:active {
+      border-color: rgba(129, 140, 248, 0.9);
+      /* 일부 브라우저가 포커스 시 배경을 흰색으로 바꿔서 글자가 안 보일 수 있음 */
+      background: rgba(2, 6, 23, 0.62);
+      color: var(--text);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
+    }
+    .select-row select option {
+      background: rgba(2, 6, 23, 0.95);
+      color: var(--text);
+    }
+    /* 모바일에서 깨지지 않게: 폭은 컨테이너(그리드 셀)에 맞춰 유동 */
+    #region-select,
+    #city-select,
+    #subdistrict-select {
+      width: 100%;
+      min-width: 0;
+    }
+    .select-wrap { position: relative; }
+    /* 요청: region-select 라벨은 위, 선택(셀렉트)은 아래 */
+    .select-wrap-stacked {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: stretch;
+    }
+    .select-wrap-stacked::after { content: none; }
+    .select-wrap-stacked label { margin-right: 0; }
+    .select-wrap::after { content: "▾"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 10px; color: #6b7280; pointer-events: none; }
+    .keyword-toggle {
+      border:1px solid rgba(129,140,248,.85);
+      background:rgba(99,102,241,.18);
+      color:#e5e7ff;
+      border-radius:999px;
+      padding:6px 9px;
+      font-size:11px;
+      cursor:pointer;
+      width: fit-content;
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+    }
+    .keyword-toggle:hover {
+      transform: translateY(-1px);
+      border-color: rgba(129, 140, 248, 1);
+      background: rgba(99, 102, 241, 0.22);
+    }
+    .keyword-anchor { position:relative; display:inline-flex; justify-self: end; }
+    .region-keywords {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      max-height:260px;
+      overflow:auto;
+      padding-right:4px;
+      margin-top:0;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(2,6,23,.95);
+      padding:10px;
+      position:absolute;
+      top:100%;
+      right:0;
+      width:min(680px,92vw);
+      z-index:40;
+      box-shadow:0 18px 40px rgba(2,6,23,.85);
+    }
+    .region-keywords.is-collapsed { display:none; }
+
+    @media (min-width: 960px) {
+      .select-row {
+        /* 모바일과 동일하게 2열 유지 */
+        grid-template-columns: 1fr 1fr;
+      }
+      .keyword-anchor { justify-self: end; }
+      .select-wrap { width: 100%; }
+    }
+    .result-text { font-size:12px; color:var(--soft); margin:8px 0 6px; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin-top:8px; }
+    .shop-card {
+      border-radius:14px; border:1px solid rgba(31,41,55,.9);
+      background:radial-gradient(circle at top left,rgba(99,102,241,.12),transparent 55%);
+      overflow:hidden; padding:0;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+    }
+    .shop-card > a {
+      display:flex; flex-direction:column; height:100%;
+      text-decoration:none; color:inherit; border-radius:inherit; overflow:hidden;
+    }
+    .shop-card-image {
+      width:100%; aspect-ratio: 16 / 10; background:#0f172a; overflow:hidden;
+    }
+    .shop-card-image img { width:100%; height:100%; object-fit:cover; display:block; }
+    .shop-card-body { padding:10px 12px 12px; display:flex; flex-direction:column; gap:0; flex:1; }
+    .shop-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: 0 14px 40px rgba(15, 23, 42, 0.9);
+    }
+    .shop-card-header {
+      display:flex; justify-content:space-between; align-items:flex-start; gap:8px;
+    }
+    .shop-card-title {
+      margin:0; font-size:14px; font-weight:600; letter-spacing:-0.02em;
+      line-height:1.35; flex:1; min-width:0;
+    }
+    .shop-card-rating { font-size:12px; color:var(--soft); white-space:nowrap; flex-shrink:0; }
+    .shop-card-rating span { font-size:11px; color:var(--soft); }
+    .shop-card-meta {
+      display:flex; flex-direction:column; gap:4px;
+      font-size:11px; color:var(--soft); margin-top:6px;
+    }
+    .shop-card-meta > span {
+      display:flex; flex-wrap:wrap; align-items:baseline; gap:4px;
+      line-height:1.45; word-break:keep-all;
+    }
+    .shop-card-price-row {
+      display:flex; flex-direction:row; align-items:center; justify-content:space-between;
+      gap:10px; margin-top:8px; width:100%;
+    }
+    .shop-card-price-row .shop-card-price {
+      font-size:14px; font-weight:800; color:#e5e7ff; margin-top:0; flex:1; min-width:0;
+    }
+    .shop-card-phone {
+      font-size:13px; font-weight:600; color:var(--soft); white-space:nowrap; flex-shrink:0;
+    }
+    .shop-card-greeting {
+      margin:6px 0 0; font-size:11px; color:var(--soft); line-height:1.55;
+      display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;
+    }
+    .shop-card-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+    .shop-card-tag {
+      font-size:10px; padding:2px 6px; border-radius:999px;
+      border:1px solid rgba(55,65,81,.9); color:#9ca3af;
+    }
+    .shop-card-footer {
+      margin-top:10px; padding-top:8px;
+      border-top:1px solid rgba(31,41,55,.5);
+    }
+    .shop-card-link {
+      font-size:12px; color:#c7d2fe; display:inline-flex; align-items:center; gap:4px;
+    }
+    @media (max-width: 960px) {
+      .shop-card-image { aspect-ratio: 16 / 9; }
+      .shop-card-body { padding: 8px 10px 10px; }
+      .shop-card-title { font-size: 13px; }
+      .shop-card-rating { font-size: 11px; }
+      .shop-card-meta { margin-top: 4px; gap: 2px; font-size: 10px; }
+      .shop-card-meta > span:nth-child(2) { flex-wrap: nowrap; white-space: nowrap; }
+      .shop-card-meta > span:nth-child(2) > span {
+        min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .shop-card-price-row { margin-top: 6px; gap: 6px; }
+      .shop-card-price-row .shop-card-price { font-size: 13px; }
+      .shop-card-phone { font-size: 11px; }
+      .shop-card-greeting, .shop-card-tags, .shop-card-footer { display: none !important; }
+    }
+    .sec { margin-top: 16px; }
+    .sec h2 { margin:0 0 7px; font-size:15px; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { font-size:11px; padding:3px 8px; border-radius:999px; border:1px dashed rgba(55,65,81,.9); color:var(--soft); background:rgba(15,23,42,.8); cursor:pointer; }
+    .links { display:flex; flex-wrap:wrap; gap:7px; }
+    .links a { font-size:12px; border:1px solid var(--border); border-radius:999px; padding:4px 9px; text-decoration:none; color:#c7d2fe; background:rgba(99,102,241,.12); }
+    .body { font-size:13px; color:var(--soft); line-height:1.8; white-space:pre-line; }
+    .body-seo { white-space: normal; }
+    .body-seo p { margin: 0 0 1em; color: var(--soft); line-height: 1.85; }
+    .body-seo .seo-theme { color: #e5e7eb; line-height: 1.95; font-size: 13px; }
+    .seo-tips-table { width: 100%; border-collapse: collapse; margin: 1.1em 0 0.4em; font-size: 12px; }
+    .seo-tips-table th, .seo-tips-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    .seo-tips-table thead th { background: rgba(99, 102, 241, 0.1); color: #c7d2fe; font-weight: 600; }
+
+    /* 모바일에서: h1/intro를 업체 카드(grid) 제일 아래로 */
+    @media (max-width: 960px) {
+      article.card > h1 { order: 999; }
+      article.card > .intro { order: 1000; }
+      /* search-bar는 화면이 커져도/작아져도 상단 유지 */
+      article.card > .search-bar { order: 0; }
+    }
+
+    /* PC: search-bar는 왼쪽, h1은 오른쪽 */
+    @media (min-width: 960px) {
+      article.card {
+        display: grid;
+        grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+        column-gap: 16px;
+        align-items: start;
+      }
+      article.card > .search-bar {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        margin: 0; /* grid 안에서 마진 제거 */
+      }
+      article.card > h1 {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0 0 6px;
+      }
+      article.card > .intro {
+        grid-column: 2;
+        grid-row: 2;
+        margin-bottom: 0;
+      }
+      /* 아래 영역은 전체폭 사용 */
+      #result-text,
+      #shop-card-grid,
+      .sec {
+        grid-column: 1 / -1;
+      }
+      /* search-bar를 조금 더 또렷하게 */
+      article.card > .search-bar {
+        background: rgba(15, 23, 42, 0.7);
+      }
+    }
+
+    /* 홈과 동일: 하단 탭 카테고리 바 */
+    .bottom-category-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: rgba(15, 23, 42, 0.92);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .bottom-category-bar .cat-btn {
+      flex: 1;
+      max-width: 200px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(2, 6, 23, 0.6);
+      color: var(--soft);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .bottom-category-bar .cat-btn:first-child { border-radius: 12px 0 0 12px; border-right: none; }
+    .bottom-category-bar .cat-btn:last-child { border-radius: 0 12px 12px 0; }
+    .bottom-category-bar .cat-btn.is-active {
+      background: var(--primary-soft);
+      color: #e5e7ff;
+      border-color: rgba(129, 140, 248, 0.85);
+    }
+    .bottom-category-bar .cat-btn:not(.is-active):hover {
+      color: #e5e7eb;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <a href="../index.html" class="logo">여신 출장마사지 전국 검색</a>
+      <a href="../index.html" class="back">← 메인으로</a>
+    </div>
+    <article class="card">
+      <h1>여수 힐링 출장마사지 · 많이 찾는 안내</h1>
+      <div class="intro">전남 여수에서 믿고 찾는 힐링 출장, 1등급 케어 안내와 동네 검색 표현을 한곳에 담았습니다. 방문 만족 높은 곳을 찾는 분께 도움이 됩니다.</div>
+      <div class="search-bar">
+        <div class="search-input-row">
+          <div class="search-input-wrap">
+            <span class="icon">🔍</span>
+            <input id="shop-search-input" type="search" placeholder="예: 강남 출장마사지, 제주 연동 홈타이, 부산 서면 마사지" autocomplete="off" value="여수 출장마사지" />
+            <button class="clear-btn" id="search-clear-btn" aria-label="검색어 초기화">×</button>
+          </div>
+          <div class="pill-filters" id="quick-region-pills">
+            <!-- 선택한 지역의 시/구 빠른 선택 -->
+          </div>
+        </div>
+        <div class="select-row">
+          <div class="select-wrap select-wrap-stacked">
+            <label for="region-select">지역</label>
+            <select id="region-select"><option value="">전체</option></select>
+          </div>
+          <div class="select-wrap">
+            <label for="city-select">시/구</label>
+            <select id="city-select" disabled><option value="">전체</option></select>
+          </div>
+          <div class="select-wrap">
+            <label for="subdistrict-select">동/읍/면</label>
+            <select id="subdistrict-select" disabled><option value="">전체</option></select>
+          </div>
+          <div class="keyword-anchor">
+            <button type="button" id="keyword-toggle-btn" class="keyword-toggle" aria-expanded="false">키워드 보기</button>
+            <div id="region-keyword-list" class="region-keywords is-collapsed">
+              <div class="chips"><span class="chip">여수출장마사지</span><span class="chip">여수홈타이</span><span class="chip">여수출장안마</span><span class="chip">학동출장마사지</span><span class="chip">웅천출장마사지</span><span class="chip">덕충출장마사지</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="result-text" class="result-text">업체 데이터를 불러오는 중…</div>
+      <div id="shop-card-grid" class="card-grid">
+<!-- AUTO_SHOP_GRID_BEGIN -->
+<article class="shop-card" data-id="gwangju_sensual_massage_homecare_001">
+  <a href="../shop-detail.html?id=gwangju_sensual_massage_homecare_001" aria-label="20대 센슈얼마사지홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="../images/광주홈타이_센슈얼마사지.jpg" alt="20대 센슈얼마사지홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">20대 센슈얼마사지홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>광주</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">130,000원~</span>
+        <span class="shop-card-phone">0507-1859-6832</span>
+      </div>
+      <p class="shop-card-greeting">20대 ~ 30대 관리사 광주홈케어 ⭐ 부드러운 손길로 ♥ ♥ 최선을 다하겠습니다 !! ⭐ 출장마사지 최고의 서비스를 보장하는 센슈얼마사지홈케어 입니다. 언제 어디서든 찾아가 최상의 힐링을 한분한분 정성을 다해 관리해드리겠습니다. 저희 업소는 샵방문 및 홈타이 2가지 전부 가능합니다. 편안하게 연락주세요. ❤ 광주 나주 담양 화순 첨단지구 하남지구 순천 전남 전북 대전 지역 출장 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">단일 코스</span><span class="shop-card-tag">출장홈타이</span><span class="shop-card-tag">힐링출장</span><span class="shop-card-tag">힐링샵</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="gwangju_theface_homecare_001">
+  <a href="../shop-detail.html?id=gwangju_theface_homecare_001" aria-label="더페이스 상세보기">
+    <div class="shop-card-image">
+      <img src="../images/광주출장마사지_더페이스.jpg" alt="더페이스" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">더페이스</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>광주</span></span>
+        <span>⏱ <span>오후 19시 ~ 새벽 5시 (폰이꺼진경우 : 마감, 랜덤 휴무, 문의시간 : 15시 부터 가능)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">60,000원~</span>
+        <span class="shop-card-phone">0507-1859-6987</span>
+      </div>
+      <p class="shop-card-greeting">광주 전지역 및 전남지역⭐20대 최강 미녀 &amp; 어디서든 달려가겠습니다. ♥ ⭐ 출장샵 최고의 서비스를 보장하는 더페이스 홈타이입니다. 주변에만 있으시다면 어디서든 달려 가겠습니다. 고객님의 힐링에 적극적으로 최선을 다하겠습니다. 광주 외 나주,화순,담양 지역에서 출장마사지 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">타이마사지</span><span class="shop-card-tag">아로마마사지</span><span class="shop-card-tag">힐링 스웨디시</span><span class="shop-card-tag">스페셜 마사지</span><span class="shop-card-tag">출장마사지</span><span class="shop-card-tag">홈타이</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<article class="shop-card" data-id="jeongseong_homecare_001">
+  <a href="../shop-detail.html?id=jeongseong_homecare_001" aria-label="정성홈케어 상세보기">
+    <div class="shop-card-image">
+      <img src="../images/출장마사지_정성홈케어.jpg" alt="정성홈케어" loading="lazy" decoding="async" />
+    </div>
+    <div class="shop-card-body">
+      <div class="shop-card-header">
+        <h2 class="shop-card-title">정성홈케어</h2>
+        <div class="shop-card-rating">★ 4.9 <span>(2)</span></div>
+      </div>
+      <div class="shop-card-meta">
+        <span>📍 <span>전북,전남,광주</span></span>
+        <span>⏱ <span>24시간 (폰이꺼진경우 : 마감, 랜덤 휴무)</span></span>
+      </div>
+      <div class="shop-card-price-row">
+        <span class="shop-card-price">130,000원~</span>
+        <span class="shop-card-phone">0507-1859-7133</span>
+      </div>
+      <p class="shop-card-greeting">출장마사지 부드러운 손길 ⭐힐링으로 모시겠습니다. 언제나 감사합니다 ⭐ 홈케어 최고의 서비스를 보장하는 정성 홈케어입니다. 어디든지 방문하여 최상의 힐링을 한분 한분 정성을 다해 선사해드리겠습니다. 전북,전남,광주 홈케어 전지역에서 출장마사지 서비스를 제공합니다.</p>
+      <div class="shop-card-tags"><span class="shop-card-tag">홈케어 관리</span><span class="shop-card-tag">스포츠 마사지</span><span class="shop-card-tag">아로마 마사지</span><span class="shop-card-tag">브라질리언 왁싱</span><span class="shop-card-tag">크리스탈 수정 디톡스</span><span class="shop-card-tag">황제코스</span></div>
+      <div class="shop-card-footer">
+        <span class="shop-card-link">상세 보기 <span>↗</span></span>
+      </div>
+    </div>
+  </a>
+</article>
+<!-- AUTO_SHOP_GRID_END -->
+      </div>
+      <div class="sec">
+        <h2>지역 안내</h2>
+        <div class="body body-seo"><p>돌산대교 야경을 보고 싶은 마음이 커질수록, 해상케이블카와 중앙시장 회 골목에서 걸음이 늘어난다. 성수기에는 사람이 몰려 움직이는 속도가 느려지고, 산단 야근이 겹치면 하루 끝이 더 무겁게 남는다. 여름 습기가 피부에 달라붙는 날엔 샤워를 해도 몸이 쉽게 내려앉지 않아서, 여수밤바다 산책로에서 한 번 더 숨을 고르는 일정 자체가 긴장 풀기에 중요하다. 그래서 여수 출장마사지는 방문 케어로 피로 회복의 순서를 먼저 맞추는 선택이 잘 맞는다. 근육은 천천히 풀어주어야 다음 밤 야경 동선도 편해진다.</p></div>
+      </div>
+      <div class="sec">
+        <h2>연관 키워드</h2>
+        <div class="chips"><span class="chip">여수출장마사지</span><span class="chip">여수홈타이</span><span class="chip">여수출장안마</span><span class="chip">학동출장마사지</span><span class="chip">웅천출장마사지</span><span class="chip">덕충출장마사지</span></div>
+      </div>
+      <div class="sec">
+        <h2>바로가기</h2>
+        <div class="links"><a href="전남.html">전남출장마사지</a><a href="전남--여수.html">여수출장마사지</a><a href="전남--순천.html">순천출장마사지</a><a href="전남--목포.html">목포출장마사지</a><a href="전남--광양.html">광양출장마사지</a><a href="전남--나주.html">나주출장마사지</a><a href="전남--무안.html">무안출장마사지</a><a href="전남--해남.html">해남출장마사지</a><a href="전남--고흥.html">고흥출장마사지</a><a href="전남--화순.html">화순출장마사지</a><a href="전남--영암.html">영암출장마사지</a><a href="전남--영광.html">영광출장마사지</a><a href="전남--완도.html">완도출장마사지</a><a href="전남--담양.html">담양출장마사지</a><a href="전남--장성.html">장성출장마사지</a><a href="전남--보성.html">보성출장마사지</a><a href="전남--신안.html">신안출장마사지</a><a href="전남--장흥.html">장흥출장마사지</a><a href="전남--강진.html">강진출장마사지</a><a href="전남--함평.html">함평출장마사지</a><a href="전남--진도.html">진도출장마사지</a><a href="전남--곡성.html">곡성출장마사지</a><a href="전남--구례.html">구례출장마사지</a></div>
+      </div>
+    </article>
+  </div>
+
+  <nav class="bottom-category-bar" id="bottom-category-bar">
+    <button type="button" class="cat-btn is-active" data-category="outcall" id="cat-btn-outcall-static">출장마사지</button>
+    <button type="button" class="cat-btn" data-category="shop" id="cat-btn-shop-static">마사지</button>
+  </nav>
+
+  <script src="../shop-card-data.js"></script>
+  <script src="../shops.json"></script>
+  <script src="../shop-resolve.js"></script>
+  <script>
+    (function () {
+      var categoryMode = 'outcall';
+      var PRESET_REGION = "전남";
+      var PRESET_CITY = "여수";
+      var HOT_SUB_VAL_SEP = '|||';
+      var input = document.getElementById('shop-search-input');
+      var clearBtn = document.getElementById('search-clear-btn');
+      var regionSelect = document.getElementById('region-select');
+      var citySelect = document.getElementById('city-select');
+      var subdistrictSelect = document.getElementById('subdistrict-select');
+      var gridEl = document.getElementById('shop-card-grid');
+      var resultTextEl = document.getElementById('result-text');
+      var toggleBtn = document.getElementById('keyword-toggle-btn');
+      var kwPanel = document.getElementById('region-keyword-list');
+      var keywordAnchorEl = toggleBtn.closest('.keyword-anchor');
+      var isInitializing = true;
+      var regionData = { regions: [{"name":"서울","districts":["종로","중구","용산","성동","광진","동대문","중랑","성북","강북","도봉","노원","은평","서대문","마포","양천","강서","구로","금천","영등포","동작","관악","서초","강남","송파","강동"]},{"name":"부산","districts":["중구","서구","동구","영도","부산진","동래","남구","북구","강서구","해운대","사하","금정","연제","수영","사상","기장"]},{"name":"인천","districts":["중구","동구","미추홀","연수","남동","부평","계양","서구","강화","옹진"]},{"name":"대구","districts":["중구","동구","서구","남구","북구","수성","달서","달성","군위"]},{"name":"광주","districts":["동구","서구","남구","북구","광산"]},{"name":"대전","districts":["동구","중구","서구","유성","대덕"]},{"name":"울산","districts":["중구","남구","동구","북구","울주"]},{"name":"세종","districts":[]},{"name":"경기","districts":["가평","고양","과천","광명","광주","구리","군포","김포","남양주","동두천","부천","성남","수원","시흥","안산","안성","안양","양주","양평","여주","연천","오산","용인","의왕","의정부","이천","파주","평택","포천","하남","화성"]},{"name":"강원","districts":["원주","춘천","강릉","동해","속초","삼척","홍천","태백","철원","횡성","평창","영월","정선","인제","고성","양양","화천","양구"]},{"name":"충북","districts":["청주","충주","제천","보은","옥천","영동","증평","진천","괴산","음성","단양"]},{"name":"충남","districts":["천안","공주","보령","아산","서산","논산","계룡","당진","금산","부여","서천","청양","홍성","예산","태안"]},{"name":"경북","districts":["포항","경주","김천","안동","구미","영주","영천","상주","문경","경산","의성","청송","영양","영덕","청도","고령","성주","칠곡","예천","봉화","울진","울릉"]},{"name":"경남","districts":["창원","김해","진주","양산","거제","통영","사천","밀양","함안","거창","창녕","고성","하동","합천","남해","함양","산청","의령"]},{"name":"전북","districts":["전주","익산","군산","정읍","완주","김제","남원","고창","부안","임실","순창","진안","장수","무주"]},{"name":"전남","districts":["여수","순천","목포","광양","나주","무안","해남","고흥","화순","영암","영광","완도","담양","장성","보성","신안","장흥","강진","함평","진도","곡성","구례"]},{"name":"제주","districts":["제주","서귀포"]}] };
+      var hotData = { regions: [{"region":"서울","cities":[{"district":"강남","subdistricts":["역삼","논현","신사","압구정","청담","삼성","대치","개포"]},{"district":"서초","subdistricts":["서초","방배","잠원","반포"]},{"district":"송파","subdistricts":["잠실","잠실본","문정","가락","방이","석촌","풍납"]},{"district":"마포","subdistricts":["서교","동교","합정","상수","망원","연남"]},{"district":"종로","subdistricts":["종로1가","종로2가","종로3가","인사동","삼청","청운","부암"]},{"district":"중구","subdistricts":["명동","충무로","을지로","소공","신당","황학"]},{"district":"용산","subdistricts":["이태원","한남","동빙고","보광","원효로"]},{"district":"영등포","subdistricts":["영등포","여의도","문래","당산"]},{"district":"구로","subdistricts":["구로","고척","개봉","오류"]},{"district":"금천","subdistricts":["가산","독산","시흥"]},{"district":"관악","subdistricts":["신림","봉천"]},{"district":"동작","subdistricts":["노량진","상도","사당"]}]},{"region":"부산","cities":[{"district":"해운대","subdistricts":["중동","좌동","우동","송정"]},{"district":"수영","subdistricts":["광안","남천","민락"]},{"district":"부산진","subdistricts":["서면","부전","전포","가야","범천"]},{"district":"동래","subdistricts":["명륜","온천","사직"]},{"district":"남구","subdistricts":["대연","문현","용호"]},{"district":"중구","subdistricts":["광복","남포","동광"]}]},{"region":"인천","cities":[{"district":"연수","subdistricts":["송도","연수"]},{"district":"남동","subdistricts":["구월","논현"]},{"district":"부평","subdistricts":["부평","부개","삼산"]},{"district":"중구","subdistricts":["운서","중산"]}]},{"region":"대구","cities":[{"district":"중구","subdistricts":["동성로","삼덕동"]},{"district":"수성","subdistricts":["범어","만촌","수성동","두산"]},{"district":"달서","subdistricts":["상인","용산","두류","이곡"]}]},{"region":"광주","cities":[{"district":"서구","subdistricts":["치평","농성","풍암","상무"]},{"district":"동구","subdistricts":["충장로","대인"]}]},{"region":"대전","cities":[{"district":"유성","subdistricts":["봉명","궁동","어은"]},{"district":"서구","subdistricts":["둔산","탄방"]},{"district":"중구","subdistricts":["은행동","문화동"]}]},{"region":"울산","cities":[{"district":"남구","subdistricts":["삼산","신정"]},{"district":"중구","subdistricts":["성남","옥교"]}]},{"region":"경기","cities":[{"district":"수원","subdistricts":["영통","매탄","인계","행궁","광교"]},{"district":"성남","subdistricts":["정자","서현","야탑","수내","이매","금곡","판교"]},{"district":"고양","subdistricts":["일산동","주엽","백석","마두"]},{"district":"부천","subdistricts":["상동","중동","송내","소사본"]},{"district":"안양","subdistricts":["평촌","비산","호계"]},{"district":"안산","subdistricts":["고잔","중앙","상록수"]},{"district":"평택","subdistricts":["비전","소사","송탄"]},{"district":"의정부","subdistricts":["가능","의정부"]},{"district":"용인","subdistricts":["수지","죽전","보정","동백"]}]},{"region":"제주","cities":[{"district":"제주","subdistricts":["연동","노형","이도","삼도","애월","구좌","조천"]},{"district":"서귀포","subdistricts":["중문","서귀","대포","성산","표선","안덕"]}]},{"region":"강원","cities":[{"district":"강릉","subdistricts":["경포","포남","교동","옥계","안목"]},{"district":"속초","subdistricts":["조양","교동","청호","금호"]},{"district":"춘천","subdistricts":["퇴계","석사","온의","명동"]},{"district":"동해","subdistricts":["천곡","묵호","북삼"]},{"district":"양양","subdistricts":["양양","강현","서면"]},{"district":"평창","subdistricts":["대관령","봉평"]}]},{"region":"충북","cities":[{"district":"청주","subdistricts":["성안","분평","용암","복대"]},{"district":"충주","subdistricts":["연수","호암"]}]},{"region":"충남","cities":[{"district":"천안","subdistricts":["불당","두정","쌍용","성정"]},{"district":"아산","subdistricts":["탕정","배방"]},{"district":"서산","subdistricts":["동문","예천"]}]},{"region":"경북","cities":[{"district":"포항","subdistricts":["죽도","대이","두호"]},{"district":"경주","subdistricts":["황성","용강"]},{"district":"구미","subdistricts":["인동","도량","진평"]}]},{"region":"경남","cities":[{"district":"창원","subdistricts":["상남","용호","성산"]},{"district":"김해","subdistricts":["삼계","장유","외동"]},{"district":"진주","subdistricts":["충무공동","평거","신안"]}]},{"region":"전북","cities":[{"district":"전주","subdistricts":["고사","서신","효자","송천"]},{"district":"군산","subdistricts":["나운","수송"]}]},{"region":"전남","cities":[{"district":"여수","subdistricts":["학동","웅천","덕충"]},{"district":"순천","subdistricts":["연향","조례"]},{"district":"목포","subdistricts":["하당","상동"]}]}] };
+
+      function isOutcallItem(item) {
+        var typeStr = (item.type || '').toString();
+        if (/출장/i.test(typeStr)) return true;
+        if (typeStr === '출장마사지') return true;
+        var svcs = item.services || [];
+        if (Array.isArray(svcs) && svcs.some(function (s) { return /출장|홈타이|방문/i.test(String(s)); })) return true;
+        var blob = [item.name, item.description, item.greeting || ''].filter(Boolean).join(' ');
+        if (/출장마사지|출장안마|홈타이|방문마사지/i.test(blob)) return true;
+        return false;
+      }
+
+      function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+        return a;
+      }
+
+      function buildAllShopCards() {
+        var rawList = (window.shopCardData || []).slice();
+        var shopsArr = (window.shopsData && window.shopsData.shops) || [];
+        var usedShopIds = new Set();
+
+        if (window.shopResolve && shopsArr.length) {
+          rawList.forEach(function (c) {
+            var sh = window.shopResolve.findShopByCard(c, shopsArr);
+            if (sh && sh.id != null) usedShopIds.add(String(sh.id));
+          });
+        }
+
+        var shopOnlyRows = shopsArr
+          .filter(function (s) { return s && s.id != null && !usedShopIds.has(String(s.id)); })
+          .map(function (s) {
+            return {
+              id: s.id,
+              name: s.name,
+              type: s.type,
+              region: s.region,
+              district: s.district,
+              dong: s.dong || '',
+              address: s.address,
+              detailAddress: s.detailAddress,
+              phone: s.phone,
+              rating: s.rating,
+              reviewCount: s.reviewCount,
+              price: s.price,
+              description: s.description,
+              image: s.image,
+              alt: s.name,
+              services: Array.isArray(s.services) ? s.services : [],
+              tags: Array.isArray(s.tags) ? s.tags : [],
+              operatingHours: s.operatingHours,
+              greeting: s.greeting || '',
+              showHealingShop: false,
+              _fromShopsJsonOnly: true,
+            };
+          });
+
+        var healingGroup = rawList.filter(function (s) { return s.showHealingShop; });
+        var normalGroup = rawList.filter(function (s) { return !s.showHealingShop; });
+        return shuffle(healingGroup).concat(shuffle(normalGroup), shuffle(shopOnlyRows));
+      }
+
+      var allShopCards = buildAllShopCards();
+
+      function getListForCategory() {
+        if (categoryMode === 'outcall') return allShopCards.filter(isOutcallItem);
+        return allShopCards.filter(function (it) { return !isOutcallItem(it); });
+      }
+
+      function normalizeDistrictName(name) {
+        return String(name || '').replace(/\s+/g, '').replace(/(시|군|구)$/, '');
+      }
+
+      function fillSubdistrictOptions(selectedRegion, selectedCity) {
+        subdistrictSelect.innerHTML = '<option value="">전체</option>';
+        if (!selectedRegion || !hotData) {
+          subdistrictSelect.disabled = true;
+          return;
+        }
+        var hr = (hotData.regions || []).find(function (x) { return x.region === selectedRegion; });
+        if (!hr || !Array.isArray(hr.cities)) {
+          subdistrictSelect.disabled = true;
+          return;
+        }
+        var count = 0;
+        hr.cities.forEach(function (city) {
+          if (selectedCity && normalizeDistrictName(city.district) !== normalizeDistrictName(selectedCity)) return;
+          (city.subdistricts || []).forEach(function (sub) {
+            count += 1;
+            var opt = document.createElement('option');
+            opt.value = city.district + HOT_SUB_VAL_SEP + sub;
+            opt.textContent = selectedCity ? sub : city.district + ' · ' + sub;
+            subdistrictSelect.appendChild(opt);
+          });
+        });
+        subdistrictSelect.disabled = count === 0;
+      }
+
+      function createCard(item) {
+        var article = document.createElement('article');
+        article.className = 'shop-card';
+        article.setAttribute('data-id', item.id);
+
+        var link = document.createElement('a');
+        link.href = '../shop-detail.html?id=' + encodeURIComponent(item.id);
+        link.setAttribute('aria-label', (item.name || '업체') + ' 상세보기');
+
+        var thumb = document.createElement('div');
+        thumb.className = 'shop-card-image';
+        var img = document.createElement('img');
+        var src = cardImageSrc(item) || item.image || '';
+        img.src = normalizeImageSrcForStatic(src);
+        img.alt = item.alt || item.name || '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.onerror = function () { thumb.style.display = 'none'; };
+        thumb.appendChild(img);
+
+        var body = document.createElement('div');
+        body.className = 'shop-card-body';
+
+        var hdr = document.createElement('div');
+        hdr.className = 'shop-card-header';
+
+        var h2 = document.createElement('h2');
+        h2.className = 'shop-card-title';
+        h2.textContent = item.name || '';
+
+        var ratingRow = document.createElement('div');
+        ratingRow.className = 'shop-card-rating';
+        ratingRow.appendChild(document.createTextNode('★ ' + (item.rating != null ? item.rating : '-') + ' '));
+        var rcSpan = document.createElement('span');
+        rcSpan.textContent = '(' + (item.reviewCount != null ? item.reviewCount : '-') + ')';
+        ratingRow.appendChild(rcSpan);
+
+        hdr.appendChild(h2);
+        hdr.appendChild(ratingRow);
+
+        function metaLine(emoji, text) {
+          var outer = document.createElement('span');
+          outer.appendChild(document.createTextNode(emoji + ' '));
+          var inner = document.createElement('span');
+          inner.textContent = text;
+          outer.appendChild(inner);
+          return outer;
+        }
+
+        var metaBlock = document.createElement('div');
+        metaBlock.className = 'shop-card-meta';
+        metaBlock.appendChild(metaLine('📍', [item.region, item.district, item.dong].filter(Boolean).join(' ')));
+        metaBlock.appendChild(metaLine('⏱', item.operatingHours || '상담 시 안내'));
+
+        var priceRow = document.createElement('div');
+        priceRow.className = 'shop-card-price-row';
+        var priceSpan = document.createElement('span');
+        priceSpan.className = 'shop-card-price';
+        priceSpan.textContent = item.price || '가격 상담';
+        var phoneSpan = document.createElement('span');
+        phoneSpan.className = 'shop-card-phone';
+        phoneSpan.textContent = item.phone || '문의 시 안내';
+        priceRow.appendChild(priceSpan);
+        priceRow.appendChild(phoneSpan);
+
+        var greet = document.createElement('p');
+        greet.className = 'shop-card-greeting';
+        var g = String(item.greeting || item.description || '').trim();
+        greet.textContent = g.slice(0, 280) + (g.length > 280 ? '…' : '');
+
+        var tagsWrap = document.createElement('div');
+        tagsWrap.className = 'shop-card-tags';
+        (item.services || []).slice(0, 6).forEach(function (svc) {
+          var span = document.createElement('span');
+          span.className = 'shop-card-tag';
+          span.textContent = svc;
+          tagsWrap.appendChild(span);
+        });
+
+        var foot = document.createElement('div');
+        foot.className = 'shop-card-footer';
+        var linkLbl = document.createElement('span');
+        linkLbl.className = 'shop-card-link';
+        linkLbl.appendChild(document.createTextNode('상세 보기 '));
+        var arr = document.createElement('span');
+        arr.textContent = '↗';
+        linkLbl.appendChild(arr);
+        foot.appendChild(linkLbl);
+
+        body.appendChild(hdr);
+        body.appendChild(metaBlock);
+        body.appendChild(priceRow);
+        body.appendChild(greet);
+        body.appendChild(tagsWrap);
+        body.appendChild(foot);
+
+        link.appendChild(thumb);
+        link.appendChild(body);
+        article.appendChild(link);
+        return article;
+      }
+
+      function normalizeImageSrcForStatic(src) {
+        var s = String(src || '');
+        // 정적 페이지는 static-pages/ 아래에 있으므로, 루트 상대 경로(images/...)는 한 단계 상위로 보정
+        if (/^\.\/images\//i.test(s)) return '../' + s.slice(2);
+        if (/^images\//i.test(s)) return '../' + s;
+        return s;
+      }
+
+      function cardImageSrc(item) {
+        var shopsArr = (window.shopsData && window.shopsData.shops) || [];
+        if (window.shopResolve) {
+          var shop = null;
+          if (item && item._fromShopsJsonOnly) {
+            shop = shopsArr.find(function (s) { return String(s.id) === String(item.id); });
+          }
+          if (!shop) shop = window.shopResolve.findShopByCard(item, shopsArr);
+          return window.shopResolve.resolveImage(item, shop) || '';
+        }
+        return item.image || '';
+      }
+
+      function buildHay(s) {
+        var tags = Array.isArray(s.tags) ? s.tags.join(' ') : '';
+        return [
+          s.name,
+          s.region,
+          s.district,
+          s.dong,
+          s.address,
+          s.detailAddress,
+          s.description,
+          s.type,
+          (s.services || []).join(' '),
+          tags,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+      }
+
+      /** 지역 선택: region 필드 일치 또는 주소/시군구/설명/태그 등에 지역명이 포함(다지역 출장 등) */
+      function buildRegionMatchBlob(s) {
+        var tags = Array.isArray(s.tags) ? s.tags.join(' ') : '';
+        return [s.region, s.district, s.dong, s.address, s.detailAddress, s.description, tags]
+          .filter(Boolean)
+          .join(' ');
+      }
+
+      function itemMatchesSelectedRegion(s, selectedRegion) {
+        if (!selectedRegion) return true;
+        if (String(s.region || '').trim() === selectedRegion) return true;
+        var blob = buildRegionMatchBlob(s);
+        if (blob.indexOf(selectedRegion) !== -1) return true;
+        return false;
+      }
+
+      function tokenMatchesHay(hay, token) {
+        if (!token) return true;
+        if (hay.indexOf(token) !== -1) return true;
+        if (token === '출장마사지' || token === '출장안마') {
+          return /출장|홈타이|방문|홈케어/.test(hay);
+        }
+        if (token === '마사지') {
+          return /마사지|스웨디시|테라피|왁싱/.test(hay);
+        }
+        return false;
+      }
+
+      function handleSearch() {
+        var list = getListForCategory();
+        var q = (input.value || '').trim().toLowerCase();
+        var tokens = q ? q.split(/\s+/).filter(Boolean) : [];
+        var selectedRegion = regionSelect.value;
+        var selectedCity = citySelect.value;
+        var selectedSub = '';
+        if (subdistrictSelect.value && subdistrictSelect.value.indexOf(HOT_SUB_VAL_SEP) !== -1) {
+          selectedSub = subdistrictSelect.value.split(HOT_SUB_VAL_SEP)[1] || '';
+        }
+        var filtered = list.filter(function (s) {
+          var ok = true;
+          if (selectedRegion) ok = ok && itemMatchesSelectedRegion(s, selectedRegion);
+          // 요청: 출장마사지(outcall)에서 지역이 선택되면 시/구/동은 결과 필터에서 무시
+          if (!(categoryMode === 'outcall' && selectedRegion)) {
+            if (selectedCity) ok = ok && normalizeDistrictName(s.district) === normalizeDistrictName(selectedCity);
+            if (selectedSub) ok = ok && String(s.dong || '').indexOf(selectedSub) !== -1;
+          }
+          if (tokens.length) {
+            var hay = buildHay(s);
+            ok = ok && tokens.every(function (t) { return tokenMatchesHay(hay, t); });
+          }
+          return ok;
+        });
+        gridEl.innerHTML = '';
+        filtered.forEach(function (item) { gridEl.appendChild(createCard(item)); });
+        resultTextEl.textContent = '검색 결과 ' + filtered.length + '개';
+      }
+
+      function syncSearchFromSelects() {
+        var parts = [];
+        // 요청: 출장마사지(outcall)에서 지역이 선택되면 시/구/동은 결과 필터에 영향을 주지 않음
+        if (categoryMode === 'outcall' && regionSelect.value) {
+          parts.push(regionSelect.value);
+        } else {
+          if (regionSelect.value) parts.push(regionSelect.value);
+          if (citySelect.value) parts.push(citySelect.value);
+          if (
+            subdistrictSelect.value &&
+            subdistrictSelect.value.indexOf(HOT_SUB_VAL_SEP) !== -1
+          ) {
+            parts.push(subdistrictSelect.value.split(HOT_SUB_VAL_SEP)[1] || '');
+          }
+        }
+        var suffix = categoryMode === 'outcall' ? ' 출장마사지' : ' 마사지';
+        input.value = parts.length ? parts.join(' ') + suffix : '';
+      }
+
+      function handleRegionChange() {
+        var selectedRegion = regionSelect.value;
+        if (!selectedRegion) {
+          if (!isInitializing) window.location.href = '../index.html';
+          return;
+        }
+        // 요청: 지역 변경 시 해당 지역 정적 페이지로 이동
+        if (!isInitializing) {
+          window.location.href = selectedRegion + '.html';
+          return;
+        }
+
+        citySelect.innerHTML = '<option value="">전체</option>';
+        citySelect.disabled = !selectedRegion;
+        if (!regionData) {
+          subdistrictSelect.innerHTML = '<option value="">전체</option>';
+          subdistrictSelect.disabled = true;
+          syncSearchFromSelects();
+          handleSearch();
+          return;
+        }
+        var r = (regionData.regions || []).find(function (x) { return x.name === selectedRegion; });
+        (r && r.districts || []).forEach(function (d) {
+          var opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          citySelect.appendChild(opt);
+        });
+        fillSubdistrictOptions(selectedRegion, '');
+        syncSearchFromSelects();
+        handleSearch();
+      }
+
+      function handleCityChange() {
+        var selectedRegion = regionSelect.value;
+        var selectedCity = citySelect.value || '';
+
+        // 요청: 시/구 변경 시 해당 시/구 정적 페이지로 이동
+        if (!isInitializing) {
+          if (!selectedRegion) {
+            window.location.href = '../index.html';
+            return;
+          }
+          if (!selectedCity) {
+            window.location.href = selectedRegion + '.html';
+            return;
+          }
+          window.location.href = selectedRegion + '--' + selectedCity + '.html';
+          return;
+        }
+
+        fillSubdistrictOptions(selectedRegion, selectedCity);
+        syncSearchFromSelects();
+        handleSearch();
+      }
+
+      function handleSubdistrictChange() {
+        syncSearchFromSelects();
+        handleSearch();
+      }
+
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        handleSearch();
+      });
+      input.addEventListener('input', handleSearch);
+      regionSelect.addEventListener('change', handleRegionChange);
+      citySelect.addEventListener('change', handleCityChange);
+      subdistrictSelect.addEventListener('change', handleSubdistrictChange);
+
+      function setCategory(mode) {
+        categoryMode = mode;
+        var outBtn = document.getElementById('cat-btn-outcall-static');
+        var shopBtn = document.getElementById('cat-btn-shop-static');
+        if (outBtn) outBtn.classList.toggle('is-active', mode === 'outcall');
+        if (shopBtn) shopBtn.classList.toggle('is-active', mode === 'shop');
+        var hasArea = regionSelect.value || citySelect.value || subdistrictSelect.value;
+        if (hasArea) syncSearchFromSelects();
+        handleSearch();
+      }
+
+      var catBtnOutcall = document.getElementById('cat-btn-outcall-static');
+      var catBtnShop = document.getElementById('cat-btn-shop-static');
+      if (catBtnOutcall) catBtnOutcall.addEventListener('click', function () { setCategory('outcall'); });
+      if (catBtnShop) catBtnShop.addEventListener('click', function () { setCategory('shop'); });
+
+      toggleBtn.addEventListener('click', function () {
+        var open = kwPanel.classList.contains('is-collapsed');
+        kwPanel.classList.toggle('is-collapsed', !open);
+        toggleBtn.textContent = open ? '키워드 보기' : '키워드 숨기기';
+        toggleBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+      toggleBtn.addEventListener('mouseenter', function () {
+        kwPanel.classList.remove('is-collapsed');
+        toggleBtn.textContent = '키워드 숨기기';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      });
+      if (keywordAnchorEl) {
+        keywordAnchorEl.addEventListener('mouseleave', function () {
+          kwPanel.classList.add('is-collapsed');
+          toggleBtn.textContent = '키워드 보기';
+          toggleBtn.setAttribute('aria-expanded', 'false');
+        });
+      }
+      Array.prototype.forEach.call(document.querySelectorAll('.chip'), function (el) {
+        el.addEventListener('click', function () {
+          var v = (el.textContent || '');
+          v = v.replace('출장마사지', ' 출장마사지');
+          if (categoryMode === 'shop') {
+            v = v.replace('출장마사지', ' 마사지').replace('출장안마', ' 마사지');
+          }
+          input.value = v;
+          handleSearch();
+        });
+      });
+
+      regionSelect.innerHTML = '<option value="">전체</option>';
+      (regionData.regions || []).forEach(function (r) {
+        var opt = document.createElement('option');
+        opt.value = r.name;
+        opt.textContent = r.name;
+        regionSelect.appendChild(opt);
+      });
+      if (PRESET_REGION) {
+        regionSelect.value = PRESET_REGION;
+        handleRegionChange();
+      }
+      if (PRESET_CITY && citySelect.querySelector('option[value="' + PRESET_CITY + '"]')) {
+        citySelect.value = PRESET_CITY;
+        handleCityChange();
+      }
+      if (!input.value) syncSearchFromSelects();
+      handleSearch();
+      isInitializing = false;
+    })();
+  </script>
+</body>
+</html>

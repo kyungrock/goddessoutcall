@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>지역별 출장마사지 안내 | 전국 출장홈타이</title>
+  <meta name="description" content="서울, 경기, 인천, 부산, 대구, 광주, 대전, 울산, 강원, 충청, 경상, 전라, 제주까지 지역·시/구·동 별 출장마사지 정보를 모아 보여주는 정적 안내 페이지입니다." />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-elevated: #0b1020;
+      --primary: #6366f1;
+      --primary-soft: rgba(99, 102, 241, 0.12);
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border: #1f2933;
+      --radius-xl: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020617 50%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+    header {
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .back-link {
+      font-size: 12px;
+      color: var(--text-soft);
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      padding: 18px 16px 22px;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.9);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+    .sub {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+    .kw-list {
+      margin: 10px 0 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .kw-chip {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px dashed rgba(55, 65, 81, 0.9);
+      color: var(--text-soft);
+      background: rgba(15, 23, 42, 0.8);
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 12px 0 6px;
+    }
+    .body-text {
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="logo">지역별 출장마사지 · 홈타이 가이드</div>
+      <a href="index.html" class="back-link">← 메인 검색으로 돌아가기</a>
+    </header>
+    <article class="card" id="region-root" aria-busy="true">
+      지역 정보를 불러오는 중입니다…
+    </article>
+  </div>
+
+  <!-- 정적 키워드 노출용: korea-regions.json, korea-hot-subdistricts.json 내용 내장 -->
+  <script type="application/json" id="regions-json">
+  </script>
+  <script type="application/json" id="hot-json">
+  </script>
+
+  <script src="korea-regions.json"></script>
+  <script src="korea-hot-subdistricts.json"></script>
+  <script>
+    (function () {
+      function getParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      const r = getParam('r') || '';
+      const c = getParam('c') || '';
+      const s = getParam('s') || '';
+
+      const root = document.getElementById('region-root');
+
+      const regionLabelParts = [];
+      if (r) regionLabelParts.push(r);
+      if (c) regionLabelParts.push(c);
+      if (s) regionLabelParts.push(s);
+      const regionLabel = regionLabelParts.join(' ');
+
+      const baseKeyword = (regionLabel || r || '전국') + ' 출장마사지';
+      const h1 = document.createElement('h1');
+      h1.textContent = baseKeyword + ' 안내';
+
+      const sub = document.createElement('div');
+      sub.className = 'sub';
+      sub.textContent =
+        (regionLabel || '해당 지역') +
+        '에서 이용할 수 있는 출장마사지 · 홈타이 서비스를 한눈에 정리한 안내 페이지입니다.';
+
+      const kwWrap = document.createElement('div');
+      kwWrap.className = 'kw-list';
+
+      const kwRaw = [];
+      if (r) kwRaw.push(r + '출장마사지', r + '홈타이', r + '출장안마');
+      if (c) {
+        const base = c.indexOf('구') === -1 && c.indexOf('시') === -1 && c.indexOf('군') === -1 ? c : r + c;
+        kwRaw.push(base + '출장마사지', base + '홈타이', base + '출장안마');
+      }
+      if (s) {
+        kwRaw.push(regionLabel + ' 마사지', regionLabel + ' 출장홈타이', regionLabel + ' 스웨디시');
+      }
+
+      Array.from(new Set(kwRaw)).forEach((k) => {
+        const chip = document.createElement('span');
+        chip.className = 'kw-chip';
+        chip.textContent = k;
+        kwWrap.appendChild(chip);
+      });
+
+      const sec1Title = document.createElement('div');
+      sec1Title.className = 'section-title';
+      sec1Title.textContent = '1. ' + (regionLabel || r || '전국') + ' 출장마사지 특징';
+
+      const sec1Body = document.createElement('div');
+      sec1Body.className = 'body-text';
+
+      const p1 =
+        (regionLabel || r || '해당 지역') +
+        '은(는) 일상적인 직장 생활과 학업, 이동으로 인해 피로가 누적되기 쉬운 생활권입니다. ' +
+        '이런 환경에서 많은 사람들이 “' +
+        baseKeyword +
+        '”를 검색하는 이유는, 굳이 샵을 찾아가지 않고도 집이나 숙소, 호텔, 에어비앤비 등 자신이 편안한 공간에서 전문 관리사의 마사지를 받고 싶기 때문입니다. ' +
+        '특히 늦은 시간까지 근무하는 직장인이나 출장을 온 비즈니스 고객, 여행 일정을 마친 관광객들에게는 방문형 케어 서비스가 큰 만족도를 주는 편입니다.';
+
+      const p2 =
+        '최근에는 ' +
+        baseKeyword +
+        '를 이용하는 고객층도 점점 다양해지고 있습니다. 단순히 피곤할 때 이용하는 것을 넘어, 정기적인 바디 케어와 릴렉싱, 수면의 질 개선, 스포츠 후 회복 관리까지 목적이 세분화되고 있습니다. ' +
+        '이 페이지에서는 ' +
+        (regionLabel || r || '해당 지역') +
+        '에서 이용할 수 있는 출장마사지의 전반적인 특징과, 어떤 기준으로 업체를 선택하면 좋은지에 대한 정보도 함께 제공합니다.';
+
+      const sec2Title = document.createElement('div');
+      sec2Title.className = 'section-title';
+      sec2Title.textContent = '2. ' + (regionLabel || r || '이 지역') + '에서 많이 검색되는 키워드와 수요';
+
+      const sec2Body = document.createElement('div');
+      sec2Body.className = 'body-text';
+
+      const p3 =
+        '실제로 온라인 검색어를 살펴보면 “' +
+        baseKeyword +
+        '” 외에도 ' +
+        (c ? c + ' 마사지, ' : '') +
+        (s ? s + ' 마사지, ' : '') +
+        (r ? r + ' 홈타이, ' : '') +
+        '스웨디시, 아로마, 커플마사지, 24시 마사지와 같은 연관 키워드들이 함께 노출되는 경우가 많습니다. ' +
+        '이는 단순한 전신 관리뿐만 아니라, 감성적인 힐링과 프라이빗한 분위기를 중시하는 고객층이 계속해서 늘어나고 있다는 의미이기도 합니다.';
+
+      const p4 =
+        (c || r || '이 지역') +
+        '은(는) 유동 인구가 많고 숙박 시설, 오피스, 주거 단지가 밀집해 있어 출장안마 수요가 꾸준한 편입니다. ' +
+        '특히 늦은 시간까지 영업하는 식당과 카페, 유흥 상권이 함께 발달한 곳이라면, 심야 시간대 “' +
+        baseKeyword +
+        '” 검색량이 더 늘어나는 경향도 확인할 수 있습니다. ' +
+        '이런 패턴을 이해하고 나에게 맞는 시간과 예산, 동선을 고려해 예약을 진행한다면, 보다 만족스러운 이용 경험을 만들 수 있습니다.';
+
+      const sec3Title = document.createElement('div');
+      sec3Title.className = 'section-title';
+      sec3Title.textContent = '3. 안전하게 ' + baseKeyword + ' 선택하는 방법';
+
+      const sec3Body = document.createElement('div');
+      sec3Body.className = 'body-text';
+
+      const p5 =
+        baseKeyword +
+        '를 검색하다 보면 다양한 광고와 후기, 블로그 글을 보게 됩니다. ' +
+        '이때 무조건 가격이 저렴한 곳만 고르기보다는, 후기의 자연스러움, 연락 응대 태도, 예약 절차의 명확성, 주소와 위치 안내가 정확한지 등을 함께 확인하는 것이 중요합니다. ' +
+        '또한 선입금 유도나 과도한 개인정보 요구, 지나치게 자극적인 표현만 강조하는 곳은 한 번 더 의심해 보는 것이 좋습니다.';
+
+      const p6 =
+        '이 페이지는 ' +
+        (regionLabel || r || '해당 지역') +
+        '에서 ' +
+        baseKeyword +
+        ' 관련 정보를 찾는 분들이 참고할 수 있도록, 주요 키워드와 선택 기준을 최대한 객관적으로 정리하는 것을 목표로 합니다. ' +
+        '앞으로도 실제 이용자들의 피드백과 시장 변화를 반영해, 보다 현실적인 정보와 팁을 제공할 수 있도록 지속적으로 내용을 보완해 나갈 예정입니다.';
+
+      sec1Body.textContent = p1 + '\n\n' + p2;
+      sec2Body.textContent = p3 + '\n\n' + p4;
+      sec3Body.textContent = p5 + '\n\n' + p6;
+
+      root.innerHTML = '';
+      root.appendChild(h1);
+      root.appendChild(sub);
+      root.appendChild(kwWrap);
+      root.appendChild(sec1Title);
+      root.appendChild(sec1Body);
+      root.appendChild(sec2Title);
+      root.appendChild(sec2Body);
+      root.appendChild(sec3Title);
+      root.appendChild(sec3Body);
+      root.setAttribute('aria-busy', 'false');
+    })();
+  </script>
+</body>
+</html>
+

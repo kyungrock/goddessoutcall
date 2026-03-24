@@ -81,6 +81,7 @@ function buildLayout({
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escHtml(title)}</title>
   <meta name="description" content="${escHtml(description)}" />
+  <meta name="google-site-verification" content="XFm21TyCnCjA4dHXag5jR63WrpmMh6DUPGM9lY4-Et8" />
   <style>
     :root { --bg:#050816; --text:#e5e7eb; --soft:#9ca3af; --border:#1f2933; --radius:18px; --primary-soft: rgba(99, 102, 241, 0.12); }
     * { box-sizing: border-box; }

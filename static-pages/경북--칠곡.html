@@ -256,9 +256,45 @@
     .links { display:flex; flex-wrap:wrap; gap:7px; }
     .links a { font-size:12px; border:1px solid var(--border); border-radius:999px; padding:4px 9px; text-decoration:none; color:#c7d2fe; background:rgba(99,102,241,.12); }
     .body { font-size:13px; color:var(--soft); line-height:1.8; white-space:pre-line; }
-    .body-seo { white-space: normal; }
-    .body-seo p { margin: 0 0 1em; color: var(--soft); line-height: 1.85; }
-    .body-seo .seo-theme { color: #e5e7eb; line-height: 1.95; font-size: 13px; }
+    .body-seo-wrap {
+      position: relative;
+      margin-top: 2px;
+      padding: 14px 12px;
+      border: 1px solid rgba(71, 85, 105, 0.55);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(2, 6, 23, 0.58));
+      box-shadow: 0 10px 28px rgba(2, 6, 23, 0.24);
+    }
+    .body-seo {
+      white-space: normal;
+      position: relative;
+      border-left: 3px solid rgba(129, 140, 248, 0.55);
+      padding-left: 10px;
+    }
+    .body-seo p {
+      margin: 0 0 0.95em;
+      color: #cbd5e1;
+      line-height: 1.9;
+      letter-spacing: 0.01em;
+    }
+    .body-seo p:first-child {
+      color: #dbeafe;
+      font-weight: 600;
+    }
+    .body-seo p:last-child {
+      margin-bottom: 0;
+      color: #bfdbfe;
+      font-weight: 600;
+    }
+    .body-seo .seo-theme {
+      color: #e5e7eb;
+      line-height: 1.95;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(99, 102, 241, 0.28);
+      background: rgba(30, 41, 59, 0.52);
+    }
     .seo-tips-table { width: 100%; border-collapse: collapse; margin: 1.1em 0 0.4em; font-size: 12px; }
     .seo-tips-table th, .seo-tips-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
     .seo-tips-table thead th { background: rgba(99, 102, 241, 0.1); color: #c7d2fe; font-weight: 600; }
@@ -472,7 +508,9 @@
       </div>
       <div class="sec">
         <h2>지역 안내</h2>
-        <div class="body body-seo"><p>경북 칠곡 이용 패턴을 기준으로 빠르게 비교할 수 있게 구성했습니다.</p><p>왜관읍 사거리에서 신호를 기다리는 시간만큼, 마음도 같이 답답해진다. 칠곡은 왜관·칠곡왜관과 미군기지 인근을 오가며 군·통근이 생활 패턴이 되고, 물류 일정까지 이어져 차량 이동이 잦다. 미군 이동 정체가 겹치면 도로가 느려지고, 물류 야근이 붙는 날엔 시골 소음까지 더해져 피로가 오래 남는다. 칠곡IC를 지나 북삼삼거리까지 이어지는 동선이 길어지면, 집에 돌아와도 긴장이 풀리는 데 시간이 든다. 그래서 칠곡 출장마사지로 방문형 케어를 준비해두면, 다음 이동 전까지 근육 이완이 차분히 들어간다. </p><p>마지막으로 이동 동선과 예산을 함께 비교하면 재방문 만족도를 높일 수 있습니다.</p></div>
+        <div class="body-seo-wrap">
+          <div class="body body-seo"><p>경북 칠곡 이용 패턴을 기준으로 빠르게 비교할 수 있게 구성했습니다.</p><p>왜관읍 사거리에서 신호를 기다리는 시간만큼, 마음도 같이 답답해진다. 칠곡은 왜관·칠곡왜관과 미군기지 인근을 오가며 군·통근이 생활 패턴이 되고, 물류 일정까지 이어져 차량 이동이 잦다. 미군 이동 정체가 겹치면 도로가 느려지고, 물류 야근이 붙는 날엔 시골 소음까지 더해져 피로가 오래 남는다. 칠곡IC를 지나 북삼삼거리까지 이어지는 동선이 길어지면, 집에 돌아와도 긴장이 풀리는 데 시간이 든다. 그래서 칠곡 출장마사지로 방문형 케어를 준비해두면, 다음 이동 전까지 근육 이완이 차분히 들어간다. </p><p>경북 칠곡 기준으로 보면 핵심은 오늘 실제 이동 루트와 피로가 시작된 시점을 함께 보는 것입니다. 경북 칠곡 출장마사지를 찾을 때는 단순 키워드보다 생활 동선과 불편 부위를 같이 전달하는 방식이 정확합니다.</p><p>핵심 테마(왜관·구미·미군이 만든 ‘군·물류·대구 북쪽 통근’)를 먼저 읽고 주요 장소(왜관·칠곡왜관, 미군기지 인근, 북삼읍)를 연결하면, 방문형 케어를 선택할 때 과장 없는 판단이 가능합니다.</p><p>생활 패턴은 군·통근, 물류, 차량 이동로 요약할 수 있습니다. 이 패턴이 누적되면 피로 회복 시점이 늦어지고 근육 이완 체감도 떨어질 수 있습니다.</p><p>대표 피로 상황은 미군 이동 정체, 물류 야근, 시골 소음입니다. 그래서 예약 단계에서 우선순위를 정하는 것이 만족도에 직접 영향을 줍니다.</p><p>로컬 동선(“왜관읍 사거리”, “칠곡IC”, “북삼삼거리”)을 한 줄로 공유하면 상담 정확도가 크게 올라갑니다. 같은 경북 칠곡 출장마사지라도 동선 정보 유무에 따라 제안 품질이 달라집니다.</p><p>검색 키워드는 &quot;경북 칠곡 출장마사지&quot;, &quot;방문 마사지&quot;, &quot;피로 회복&quot;, &quot;근육 이완&quot;을 함께 조합하는 것이 좋습니다. 지역명+시구명 조합은 실제 의도와 결과를 맞추는 데 도움이 됩니다.</p><p>이용 전에는 진행 가능 시간대, 주차/출입 동선, 숙소 환경을 함께 확인하세요. 준비 정보가 정리될수록 경북 칠곡 지역에서의 선택 속도와 체감 만족이 함께 올라갑니다.</p><p>마무리로 당일 컨디션을 기준으로 강도와 순서를 조절하면 회복 흐름이 더 안정적입니다. 경북 칠곡 생활권에서는 이동을 줄이고 휴식으로 바로 이어지는 방식이 특히 유리합니다.</p><p>경북 칠곡 기준으로 보면 핵심은 오늘 실제 이동 루트와 피로가 시작된 시점을 함께 보는 것입니다. 경북 칠곡 출장마사지를 찾을 때는 단순 키워드보다 생활 동선과 불편 부위를 같이 전달하는 방식이 정확합니다.</p><p>핵심 테마(왜관·구미·미군이 만든 ‘군·물류·대구 북쪽 통근’)를 먼저 읽고 주요 장소(왜관·칠곡왜관, 미군기지 인근, 북삼읍)를 연결하면, 방문형 케어를 선택할 때 과장 없는 판단이 가능합니다.</p><p>생활 패턴은 군·통근, 물류, 차량 이동로 요약할 수 있습니다. 이 패턴이 누적되면 피로 회복 시점이 늦어지고 근육 이완 체감도 떨어질 수 있습니다.</p><p>대표 피로 상황은 미군 이동 정체, 물류 야근, 시골 소음입니다. 그래서 예약 단계에서 우선순위를 정하는 것이 만족도에 직접 영향을 줍니다.</p><p>로컬 동선(“왜관읍 사거리”, “칠곡IC”, “북삼삼거리”)을 한 줄로 공유하면 상담 정확도가 크게 올라갑니다. 같은 경북 칠곡 출장마사지라도 동선 정보 유무에 따라 제안 품질이 달라집니다.</p><p>검색 키워드는 &quot;경북 칠곡 출장마사지&quot;, &quot;방문 마사지&quot;, &quot;피로 회복&quot;, &quot;근육 이완&quot;을 함께 조합하는 것이 좋습니다. 지역명+시구명 조합은 실제 의도와 결과를 맞추는 데 도움이 됩니다.</p><p>이용 전에는 진행 가능 시간대, 주차/출입 동선, 숙소 환경을 함께 확인하세요. 준비 정보가 정리될수록 경북 칠곡 지역에서의 선택 속도와 체감 만족이 함께 올라갑니다.</p><p>마무리로 당일 컨디션을 기준으로 강도와 순서를 조절하면 회복 흐름이 더 안정적입니다. 경북 칠곡 생활권에서는 이동을 줄이고 휴식으로 바로 이어지는 방식이 특히 유리합니다.</p><p>경북 칠곡 기준으로 보면 핵심은 오늘 실제 이동 루트와 피로가 시작된 시점을 함께 보는 것입니다. 경북 칠곡 출장마사지를 찾을 때는 단순 키워드보다 생활 동선과 불편 부위를 같이 전달하는 방식이 정확합니다.</p><p>마지막으로 이동 동선과 예산을 함께 비교하면 재방문 만족도를 높일 수 있습니다.</p></div>
+        </div>
       </div>
       <div class="sec">
         <h2>연관 키워드</h2>

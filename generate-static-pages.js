@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { buildProfileBodyHtml } = require('./seo-profile-bodies.js');
+const { buildProfileBodyHtml, getProfiles } = require('./seo-profile-bodies.js');
 const seoulSeoBodies = require('./seoul-seo-bodies.js');
 const gyeonggiSeoBodies = require('./gyeonggi-seo-bodies.js');
 const incheonSeoBodies = require('./incheon-seo-bodies.js');
@@ -39,6 +39,54 @@ function escHtml(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function plainTextLen(html) {
+  return String(html || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim().length;
+}
+
+function ensureBodyLengthByProfile(html, opts) {
+  const minLen = 2000;
+  const maxLen = 3000;
+  let out = String(html || '');
+  const baseLen = plainTextLen(out);
+  if (baseLen >= minLen && baseLen <= maxLen) return out;
+  if (baseLen > maxLen) return out;
+
+  const region = String(opts.region || '').trim();
+  const district = String(opts.district || '').trim();
+  const display = district ? `${region} ${district}` : region;
+  const profileMap = getProfiles();
+  const cityFields = profileMap.get(`${region}|${district}`) || null;
+  const regionFields = profileMap.get(`${region}|`) || null;
+  const fields = cityFields || regionFields || {};
+  const theme = String(fields['핵심 테마'] || '');
+  const places = String(fields['주요 장소'] || '');
+  const life = String(fields['생활 패턴'] || '');
+  const tired = String(fields['피로 상황'] || '');
+  const local = String(fields['로컬 지명·동선'] || fields['로컬 지명'] || '');
+
+  const fillers = [
+    `${display} 기준으로 보면 핵심은 오늘 실제 이동 루트와 피로가 시작된 시점을 함께 보는 것입니다. ${display} 출장마사지를 찾을 때는 단순 키워드보다 생활 동선과 불편 부위를 같이 전달하는 방식이 정확합니다.`,
+    `${theme ? `핵심 테마(${theme})를 먼저 읽고` : '핵심 테마를 먼저 잡고'} 주요 장소(${places || `${display} 주요 생활권`})를 연결하면, 방문형 케어를 선택할 때 과장 없는 판단이 가능합니다.`,
+    `${life ? `생활 패턴은 ${life}로 요약할 수 있습니다.` : '생활 패턴은 평일과 주말 동선이 다르게 반복되는 구조입니다.'} 이 패턴이 누적되면 피로 회복 시점이 늦어지고 근육 이완 체감도 떨어질 수 있습니다.`,
+    `${tired ? `대표 피로 상황은 ${tired}입니다.` : '대표 피로 상황은 어깨·목과 하체가 동시에 무거워지는 복합 패턴입니다.'} 그래서 예약 단계에서 우선순위를 정하는 것이 만족도에 직접 영향을 줍니다.`,
+    `${local ? `로컬 동선(${local})을 한 줄로 공유하면` : '로컬 동선을 한 줄로 공유하면'} 상담 정확도가 크게 올라갑니다. 같은 ${display} 출장마사지라도 동선 정보 유무에 따라 제안 품질이 달라집니다.`,
+    `검색 키워드는 "${display} 출장마사지", "방문 마사지", "피로 회복", "근육 이완"을 함께 조합하는 것이 좋습니다. 지역명+시구명 조합은 실제 의도와 결과를 맞추는 데 도움이 됩니다.`,
+    `이용 전에는 진행 가능 시간대, 주차/출입 동선, 숙소 환경을 함께 확인하세요. 준비 정보가 정리될수록 ${display} 지역에서의 선택 속도와 체감 만족이 함께 올라갑니다.`,
+    `마무리로 당일 컨디션을 기준으로 강도와 순서를 조절하면 회복 흐름이 더 안정적입니다. ${display} 생활권에서는 이동을 줄이고 휴식으로 바로 이어지는 방식이 특히 유리합니다.`,
+  ];
+
+  let idx = 0;
+  while (plainTextLen(out) < minLen && idx < fillers.length * 4) {
+    const line = fillers[idx % fillers.length];
+    out += `<p>${escHtml(line)}</p>`;
+    idx += 1;
+  }
+  return out;
 }
 
 function normalizeDistrictName(name) {
@@ -115,7 +163,11 @@ function buildLayout({
   const introLead = pick(introVariants, `${pageKey}:intro`);
   const conclusionLead = pick(conclusionVariants, `${pageKey}:conclusion`);
   const tableHeader = pick(tableHeaderSets, `${pageKey}:table`);
-  const bodyContentRaw = bodyHtml != null && bodyHtml !== '' ? bodyHtml : escHtml(bodyText);
+  const baseBodyRaw = bodyHtml != null && bodyHtml !== '' ? bodyHtml : escHtml(bodyText);
+  const bodyContentRaw = ensureBodyLengthByProfile(baseBodyRaw, {
+    region: regionValue,
+    district: districtValue,
+  });
   const bodyContent = bodyHtml != null && bodyHtml !== ''
     ? bodyContentRaw
       .replace(/<th>\s*항목\s*<\/th>/g, `<th>${tableHeader.item}</th>`)
@@ -429,9 +481,45 @@ function buildLayout({
     .links { display:flex; flex-wrap:wrap; gap:7px; }
     .links a { font-size:12px; border:1px solid var(--border); border-radius:999px; padding:4px 9px; text-decoration:none; color:#c7d2fe; background:rgba(99,102,241,.12); }
     .body { font-size:13px; color:var(--soft); line-height:1.8; white-space:pre-line; }
-    .body-seo { white-space: normal; }
-    .body-seo p { margin: 0 0 1em; color: var(--soft); line-height: 1.85; }
-    .body-seo .seo-theme { color: #e5e7eb; line-height: 1.95; font-size: 13px; }
+    .body-seo-wrap {
+      position: relative;
+      margin-top: 2px;
+      padding: 14px 12px;
+      border: 1px solid rgba(71, 85, 105, 0.55);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.78), rgba(2, 6, 23, 0.58));
+      box-shadow: 0 10px 28px rgba(2, 6, 23, 0.24);
+    }
+    .body-seo {
+      white-space: normal;
+      position: relative;
+      border-left: 3px solid rgba(129, 140, 248, 0.55);
+      padding-left: 10px;
+    }
+    .body-seo p {
+      margin: 0 0 0.95em;
+      color: #cbd5e1;
+      line-height: 1.9;
+      letter-spacing: 0.01em;
+    }
+    .body-seo p:first-child {
+      color: #dbeafe;
+      font-weight: 600;
+    }
+    .body-seo p:last-child {
+      margin-bottom: 0;
+      color: #bfdbfe;
+      font-weight: 600;
+    }
+    .body-seo .seo-theme {
+      color: #e5e7eb;
+      line-height: 1.95;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(99, 102, 241, 0.28);
+      background: rgba(30, 41, 59, 0.52);
+    }
     .seo-tips-table { width: 100%; border-collapse: collapse; margin: 1.1em 0 0.4em; font-size: 12px; }
     .seo-tips-table th, .seo-tips-table td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
     .seo-tips-table thead th { background: rgba(99, 102, 241, 0.1); color: #c7d2fe; font-weight: 600; }
@@ -568,7 +656,9 @@ ${shopGridHtml}
       </div>
       <div class="sec">
         <h2>${escHtml(guideTitle)}</h2>
-        <div class="body body-seo"><p>${escHtml(introLead)}</p>${bodyContent}<p>${escHtml(conclusionLead)}</p></div>
+        <div class="body-seo-wrap">
+          <div class="body body-seo"><p>${escHtml(introLead)}</p>${bodyContent}<p>${escHtml(conclusionLead)}</p></div>
+        </div>
       </div>
       <div class="sec">
         <h2>${escHtml(keywordsTitle)}</h2>

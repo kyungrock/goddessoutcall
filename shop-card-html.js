@@ -188,7 +188,19 @@ function filterShopListForPage(list, opts) {
   const selectedRegion = opts.selectedRegion || '';
   const selectedCity = opts.selectedCity || '';
   const selectedSub = opts.selectedSub || '';
-  const tokens = (opts.tokens || []).map((t) => String(t).toLowerCase()).filter(Boolean);
+  let tokens = (opts.tokens || []).map((t) => String(t).toLowerCase()).filter(Boolean);
+  /* 출장+광역시도: 시/구/동은 select로만 쓰고, 검색 토큰의 동일 지명은 AND 매칭에서 제외(전역 출장 업체 유지) */
+  if (categoryMode === 'outcall' && selectedRegion) {
+    const regLc = String(selectedRegion).toLowerCase();
+    const cityNorm = selectedCity ? normalizeDistrictName(selectedCity) : '';
+    const subLc = selectedSub ? String(selectedSub).toLowerCase() : '';
+    tokens = tokens.filter((t) => {
+      if (t === regLc) return false;
+      if (cityNorm && normalizeDistrictName(t) === cityNorm) return false;
+      if (subLc && t === subLc) return false;
+      return true;
+    });
+  }
 
   return list.filter((s) => {
     let ok = true;

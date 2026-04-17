@@ -871,7 +871,27 @@
   <script src="../shop-resolve.js"></script>
   <script>
     (function () {
-      var categoryMode = 'outcall';
+      var CATEGORY_TAB_KEY = 'massage-site-category-tab';
+      function readStoredCategoryTab() {
+        try {
+          var v = sessionStorage.getItem(CATEGORY_TAB_KEY);
+          if (v === 'shop' || v === 'outcall') return v;
+        } catch (e) {}
+        return 'outcall';
+      }
+      function writeStoredCategoryTab(mode) {
+        try {
+          if (mode === 'shop' || mode === 'outcall') sessionStorage.setItem(CATEGORY_TAB_KEY, mode);
+        } catch (e) {}
+      }
+      function applyCategoryTabUI() {
+        var outBtn = document.getElementById('cat-btn-outcall-static');
+        var shopBtn = document.getElementById('cat-btn-shop-static');
+        if (outBtn) outBtn.classList.toggle('is-active', categoryMode === 'outcall');
+        if (shopBtn) shopBtn.classList.toggle('is-active', categoryMode === 'shop');
+      }
+      var categoryMode = readStoredCategoryTab();
+      applyCategoryTabUI();
       var PRESET_REGION = "경기";
       var PRESET_CITY = "이천";
       var HOT_SUB_VAL_SEP = '|||';
@@ -1172,6 +1192,17 @@
         if (subdistrictSelect.value && subdistrictSelect.value.indexOf(HOT_SUB_VAL_SEP) !== -1) {
           selectedSub = subdistrictSelect.value.split(HOT_SUB_VAL_SEP)[1] || '';
         }
+        if (categoryMode === 'outcall' && selectedRegion) {
+          var regLc = String(selectedRegion).toLowerCase();
+          var cityNorm = selectedCity ? normalizeDistrictName(selectedCity) : '';
+          var subLc = selectedSub ? String(selectedSub).toLowerCase() : '';
+          tokens = tokens.filter(function (t) {
+            if (t === regLc) return false;
+            if (cityNorm && normalizeDistrictName(t) === cityNorm) return false;
+            if (subLc && t === subLc) return false;
+            return true;
+          });
+        }
         var filtered = list.filter(function (s) {
           var ok = true;
           if (selectedRegion) ok = ok && itemMatchesSelectedRegion(s, selectedRegion);
@@ -1277,10 +1308,8 @@
 
       function setCategory(mode) {
         categoryMode = mode;
-        var outBtn = document.getElementById('cat-btn-outcall-static');
-        var shopBtn = document.getElementById('cat-btn-shop-static');
-        if (outBtn) outBtn.classList.toggle('is-active', mode === 'outcall');
-        if (shopBtn) shopBtn.classList.toggle('is-active', mode === 'shop');
+        writeStoredCategoryTab(mode);
+        applyCategoryTabUI();
         var hasArea = regionSelect.value || citySelect.value || subdistrictSelect.value;
         if (hasArea) syncSearchFromSelects();
         handleSearch();

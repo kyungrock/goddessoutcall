@@ -1775,7 +1775,20 @@
 
       const allShopCards = buildAllShopCards();
       /** 'outcall' = 출장마사지, 'shop' = 일반 마사지(샵) */
-      let categoryMode = 'outcall';
+      const CATEGORY_TAB_KEY = 'massage-site-category-tab';
+      function readStoredCategoryTab() {
+        try {
+          const v = sessionStorage.getItem(CATEGORY_TAB_KEY);
+          if (v === 'shop' || v === 'outcall') return v;
+        } catch (e) {}
+        return 'outcall';
+      }
+      function writeStoredCategoryTab(mode) {
+        try {
+          if (mode === 'shop' || mode === 'outcall') sessionStorage.setItem(CATEGORY_TAB_KEY, mode);
+        } catch (e) {}
+      }
+      let categoryMode = readStoredCategoryTab();
 
       function isOutcallItem(item) {
         const typeStr = (item.type || '').toString();
@@ -1882,6 +1895,22 @@
         return String(name || '')
           .replace(/\s+/g, '')
           .replace(/(시|군|구)$/, '');
+      }
+
+      /** 지역 선택: region 필드 일치 또는 주소/시군구/설명/태그 등에 지역명이 포함(다지역 출장 등) */
+      function buildRegionMatchBlob(s) {
+        const tags = Array.isArray(s.tags) ? s.tags.join(' ') : '';
+        return [s.region, s.district, s.dong, s.address, s.detailAddress, s.description, tags]
+          .filter(Boolean)
+          .join(' ');
+      }
+
+      function itemMatchesSelectedRegion(s, selectedRegion) {
+        if (!selectedRegion) return true;
+        if (String(s.region || '').trim() === selectedRegion) return true;
+        const blob = buildRegionMatchBlob(s);
+        if (blob.indexOf(selectedRegion) !== -1) return true;
+        return false;
       }
 
       /** korea-hot-subdistricts: 지역만 고를 때도 동/읍/면 전부, 시/구 고르면 해당 구만 */
@@ -2179,13 +2208,44 @@
         const q = (searchInput.value || '').trim();
         const lc = q.toLowerCase();
         const baseList = getListForCategory();
-        let filtered = baseList;
+        const selectedRegion = regionSelect.value || '';
+        const selectedCity = citySelect.value || '';
+        let selectedSub = '';
+        const subRaw = subdistrictSelect.value || '';
+        if (subRaw && subRaw.indexOf(HOT_SUB_VAL_SEP) !== -1) {
+          selectedSub = subRaw.split(HOT_SUB_VAL_SEP)[1] || '';
+        }
+
+        let filtered = baseList.filter(function (s) {
+          let ok = true;
+          if (selectedRegion) ok = ok && itemMatchesSelectedRegion(s, selectedRegion);
+          if (!(categoryMode === 'outcall' && selectedRegion)) {
+            if (selectedCity) {
+              ok =
+                ok &&
+                normalizeDistrictName(s.district) === normalizeDistrictName(selectedCity);
+            }
+            if (selectedSub) ok = ok && String(s.dong || '').indexOf(selectedSub) !== -1;
+          }
+          return ok;
+        });
 
         if (lc) {
-          const tokens = lc.split(/\s+/).filter(function (t) {
+          let tokens = lc.split(/\s+/).filter(function (t) {
             return t.length > 0;
           });
-          filtered = baseList.filter(function (s) {
+          if (categoryMode === 'outcall' && selectedRegion) {
+            const regLc = String(selectedRegion).toLowerCase();
+            const cityNorm = selectedCity ? normalizeDistrictName(selectedCity) : '';
+            const subLc = selectedSub ? String(selectedSub).toLowerCase() : '';
+            tokens = tokens.filter(function (t) {
+              if (t === regLc) return false;
+              if (cityNorm && normalizeDistrictName(t) === cityNorm) return false;
+              if (subLc && t === subLc) return false;
+              return true;
+            });
+          }
+          filtered = filtered.filter(function (s) {
             const hay = buildSearchHaystack(s);
             return tokens.every(function (t) {
               return tokenMatchesHay(hay, t);
@@ -2208,15 +2268,20 @@
 
       const catBtnOutcall = document.getElementById('cat-btn-outcall');
       const catBtnShop = document.getElementById('cat-btn-shop');
+      function applyCategoryTabUI() {
+        catBtnOutcall.classList.toggle('is-active', categoryMode === 'outcall');
+        catBtnShop.classList.toggle('is-active', categoryMode === 'shop');
+      }
       function setCategory(mode) {
         categoryMode = mode;
-        catBtnOutcall.classList.toggle('is-active', mode === 'outcall');
-        catBtnShop.classList.toggle('is-active', mode === 'shop');
+        writeStoredCategoryTab(mode);
+        applyCategoryTabUI();
         /* 하단 탭 바꾼 뒤에도 지역 선택값이 있으면 검색 문구 접미사 맞춤 */
         const hasArea = regionSelect.value || citySelect.value || subdistrictSelect.value;
         if (hasArea) syncSearchFromSelects();
         else handleSearch();
       }
+      applyCategoryTabUI();
       catBtnOutcall.addEventListener('click', () => setCategory('outcall'));
       catBtnShop.addEventListener('click', () => setCategory('shop'));
 

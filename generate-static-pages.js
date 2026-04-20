@@ -222,16 +222,6 @@ function buildLayout({
   })}</script>
   <script type="application/ld+json">${JSON.stringify({
     '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: breadcrumbItems.map((item, idx) => ({
-      '@type': 'ListItem',
-      position: idx + 1,
-      name: item.name,
-      item: item.url,
-    })),
-  })}</script>
-  <script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: title,
     description,
